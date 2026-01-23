@@ -1,0 +1,259 @@
+import { useEffect, useState } from 'react'
+import { Mail, Phone, MapPin, Send, MessageCircle, Clock } from 'lucide-react'
+import { useTelegram } from '../context/TelegramContext'
+
+export default function Contacts() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+
+  const { showBackButton, hideBackButton, isTelegram, webApp, hapticFeedback } = useTelegram()
+
+  useEffect(() => {
+    if (isTelegram) {
+      showBackButton(() => window.history.back())
+      return () => hideBackButton()
+    }
+  }, [isTelegram, showBackButton, hideBackButton])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    if (isTelegram) {
+      hapticFeedback('notification', 'success')
+    }
+
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    setIsSubmitted(true)
+    setIsSubmitting(false)
+    
+    // Reset form after 3 seconds
+    setTimeout(() => {
+      setIsSubmitted(false)
+      setFormData({ name: '', email: '', phone: '', message: '' })
+    }, 3000)
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
+  }
+
+  const openTelegramChat = () => {
+    const telegramLink = 'https://t.me/finlogiq_support'
+    if (isTelegram && webApp) {
+      webApp.openTelegramLink(telegramLink)
+    } else {
+      window.open(telegramLink, '_blank')
+    }
+  }
+
+  return (
+    <div className="pb-20 md:pb-0">
+      {/* Hero */}
+      <section className="bg-gradient-to-br from-gray-50 to-white py-12 md:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+            Контакты
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl">
+            Свяжитесь с нами любым удобным способом
+          </p>
+        </div>
+      </section>
+
+      <section className="py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Contact Info */}
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                Как с нами связаться
+              </h2>
+
+              <div className="space-y-6">
+                {/* Email */}
+                <a
+                  href="mailto:info@finlogiq.ru"
+                  className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all group"
+                >
+                  <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary-600 transition-colors">
+                    <Mail className="w-5 h-5 text-primary-600 group-hover:text-white transition-colors" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900">Email</div>
+                    <div className="text-primary-600">info@finlogiq.ru</div>
+                  </div>
+                </a>
+
+                {/* Phone */}
+                <a
+                  href="tel:+74951234567"
+                  className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all group"
+                >
+                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-green-600 transition-colors">
+                    <Phone className="w-5 h-5 text-green-600 group-hover:text-white transition-colors" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900">Телефон</div>
+                    <div className="text-gray-600">+7 (495) 123-45-67</div>
+                  </div>
+                </a>
+
+                {/* Telegram */}
+                <button
+                  onClick={openTelegramChat}
+                  className="w-full flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all group text-left"
+                >
+                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500 transition-colors">
+                    <MessageCircle className="w-5 h-5 text-blue-500 group-hover:text-white transition-colors" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900">Telegram</div>
+                    <div className="text-gray-600">@finlogiq_support</div>
+                  </div>
+                </button>
+
+                {/* Address */}
+                <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-100">
+                  <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900">Адрес</div>
+                    <div className="text-gray-600">Москва, Россия</div>
+                  </div>
+                </div>
+
+                {/* Working hours */}
+                <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-100">
+                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900">Часы работы</div>
+                    <div className="text-gray-600">Пн-Пт: 10:00 - 19:00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Form */}
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                Напишите нам
+              </h2>
+
+              {isSubmitted ? (
+                <div className="bg-green-50 border border-green-200 rounded-2xl p-8 text-center animate-fade-in">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Send className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-green-800 mb-2">
+                    Сообщение отправлено!
+                  </h3>
+                  <p className="text-green-600">
+                    Мы свяжемся с вами в ближайшее время
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      Имя *
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      required
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition-colors outline-none"
+                      placeholder="Ваше имя"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition-colors outline-none"
+                      placeholder="email@example.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                      Телефон
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition-colors outline-none"
+                      placeholder="+7 (___) ___-__-__"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                      Сообщение *
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      required
+                      rows={4}
+                      value={formData.message}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition-colors outline-none resize-none"
+                      placeholder="Опишите вашу задачу..."
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Отправка...
+                      </>
+                    ) : (
+                      <>
+                        Отправить
+                        <Send className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}

@@ -1,0 +1,135 @@
+import { Router, Response } from 'express'
+import { User } from '../models/User'
+import { auth, adminAuth, AuthRequest } from '../middleware/auth'
+
+const router = Router()
+
+// Get all users (admin only)
+router.get('/', adminAuth, async (req: AuthRequest, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1
+    const limit = parseInt(req.query.limit as string) || 10
+    const skip = (page - 1) * limit
+
+    const users = await User.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+
+    const total = await User.countDocuments()
+
+    res.json({
+      users,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      },
+    })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || 'Ошибка сервера' })
+  }
+})
+
+// Get user by ID
+router.get('/:id', auth, async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await User.findById(req.params.id)
+    
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' })
+    }
+
+    // Only allow users to see their own profile or admins to see any
+    if (req.user!.role !== 'admin' && req.user!._id.toString() !== user._id.toString()) {
+      return res.status(403).json({ message: 'Доступ запрещён' })
+    }
+
+    res.json({ user })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || 'Ошибка сервера' })
+  }
+})
+
+// Update user
+router.put('/:id', auth, async (req: AuthRequest, res: Response) => {
+  try {
+    const { name, email } = req.body
+
+    // Only allow users to update their own profile or admins to update any
+    if (req.user!.role !== 'admin' && req.user!._id.toString() !== req.params.id) {
+      return res.status(403).json({ message: 'Доступ запрещён' })
+    }
+
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' })
+    }
+
+    if (name) user.name = name
+    if (email) user.email = email
+
+    await user.save()
+
+    res.json({
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+    })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || 'Ошибка сервера' })
+  }
+})
+
+// Change password
+router.put('/:id/password', auth, async (req: AuthRequest, res: Response) => {
+  try {
+    const { currentPassword, newPassword } = req.body
+
+    // Only allow users to change their own password
+    if (req.user!._id.toString() !== req.params.id) {
+      return res.status(403).json({ message: 'Доступ запрещён' })
+    }
+
+    const user = await User.findById(req.params.id).select('+password')
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' })
+    }
+
+    // Verify current password if user has one
+    if (user.password) {
+      const isMatch = await user.comparePassword(currentPassword)
+      if (!isMatch) {
+        return res.status(400).json({ message: 'Неверный текущий пароль' })
+      }
+    }
+
+    user.password = newPassword
+    await user.save()
+
+    res.json({ message: 'Пароль успешно изменён' })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || 'Ошибка сервера' })
+  }
+})
+
+// Delete user (admin only)
+router.delete('/:id', adminAuth, async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id)
+    
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' })
+    }
+
+    res.json({ message: 'Пользователь удалён' })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || 'Ошибка сервера' })
+  }
+})
+
+export default router

@@ -10,7 +10,7 @@ echo "🚀 Starting FinLogiQ deployment..."
 # Переменные
 DOMAIN="finlogiq.ru"
 APP_DIR="/opt/finlogiq"
-REPO_URL="https://github.com/yourusername/finlogiq.git"  # Замените на ваш репозиторий
+REPO_URL="https://github.com/rosavskiy/FinlogiQ_SPA.git"
 
 # Цвета для вывода
 RED='\033[0;31m'

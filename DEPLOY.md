@@ -19,7 +19,7 @@ ssh root@your-server-ip
 
 ```bash
 # Скачайте проект
-git clone https://github.com/yourusername/finlogiq.git /opt/finlogiq
+git clone https://github.com/rosavskiy/FinlogiQ_SPA.git /opt/finlogiq
 cd /opt/finlogiq
 
 # Сделайте скрипт исполняемым
@@ -71,7 +71,7 @@ chmod +x /usr/local/bin/docker-compose
 ```bash
 mkdir -p /opt/finlogiq
 cd /opt/finlogiq
-git clone https://github.com/yourusername/finlogiq.git .
+git clone https://github.com/rosavskiy/FinlogiQ_SPA.git .
 ```
 
 ### 3. Настройка переменных окружения

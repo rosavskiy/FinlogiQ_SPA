@@ -46,7 +46,7 @@ export default function Projects() {
   }, [isTelegram, showBackButton, hideBackButton])
 
   return (
-    <div className="pb-20 md:pb-0">
+    <div className="pt-16 pb-20 md:pb-0">
       {/* Hero */}
       <section className="bg-gradient-to-br from-gray-50 to-white py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

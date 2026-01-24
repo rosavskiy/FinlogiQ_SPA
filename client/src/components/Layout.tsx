@@ -12,7 +12,7 @@ export default function Layout() {
       {/* Hide header in Telegram - use native back button instead */}
       {!isTelegram && <Header />}
       
-      <main className="flex-1 pt-16">
+      <main className="flex-1">
         <Outlet />
       </main>
       

@@ -34,8 +34,8 @@ export default function Home() {
 
   return (
     <div className="pb-20 md:pb-0">
-      {/* Hero Section - pt-16 to account for fixed header */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 text-white -mt-16 pt-16">
+      {/* Hero Section - full screen with header overlay */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 text-white min-h-[100vh] -mt-16 flex flex-col justify-center">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
           <div className="max-w-3xl">

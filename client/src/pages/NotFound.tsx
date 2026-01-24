@@ -3,7 +3,7 @@ import { Home, ArrowLeft } from 'lucide-react'
 
 export default function NotFound() {
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4">
+    <div className="pt-16 min-h-[80vh] flex items-center justify-center px-4">
       <div className="text-center">
         <div className="relative">
           <h1 className="text-[150px] md:text-[200px] font-bold text-gray-100 leading-none select-none">

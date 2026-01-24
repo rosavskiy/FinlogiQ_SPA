@@ -66,6 +66,15 @@ export const usersApi = {
   
   delete: (id: string) =>
     api.delete(`/users/${id}`),
+  
+  updateRole: (id: string, role: 'user' | 'admin') =>
+    api.put(`/users/${id}/role`, { role }),
+  
+  updateStatus: (id: string, status: 'pending' | 'active' | 'blocked') =>
+    api.put(`/users/${id}/status`, { status }),
+  
+  impersonate: (id: string) =>
+    api.post(`/users/${id}/impersonate`),
 }
 
 // Projects API

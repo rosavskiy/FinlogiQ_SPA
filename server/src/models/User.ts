@@ -7,7 +7,7 @@ export interface IUser extends Document {
   name: string
   role: 'user' | 'admin'
   telegramId?: number
-  isActive: boolean
+  status: 'pending' | 'active' | 'blocked'
   createdAt: Date
   updatedAt: Date
   comparePassword(candidatePassword: string): Promise<boolean>
@@ -44,9 +44,10 @@ const userSchema = new Schema<IUser>(
       unique: true,
       sparse: true,
     },
-    isActive: {
-      type: Boolean,
-      default: true,
+    status: {
+      type: String,
+      enum: ['pending', 'active', 'blocked'],
+      default: 'pending',
     },
   },
   {

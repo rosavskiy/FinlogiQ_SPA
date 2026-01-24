@@ -1,6 +1,6 @@
 import { Router, Response } from 'express'
 import { User } from '../models/User'
-import { auth, adminAuth, AuthRequest } from '../middleware/auth'
+import { auth, adminAuth, AuthRequest, generateToken } from '../middleware/auth'
 
 const router = Router()
 
@@ -158,17 +158,49 @@ router.put('/:id/role', adminAuth, async (req: AuthRequest, res: Response) => {
 // Update user active status (admin only)
 router.put('/:id/status', adminAuth, async (req: AuthRequest, res: Response) => {
   try {
-    const { isActive } = req.body
+    const { status } = req.body
+
+    if (!['pending', 'active', 'blocked'].includes(status)) {
+      return res.status(400).json({ message: 'Недопустимый статус' })
+    }
 
     const user = await User.findById(req.params.id)
     if (!user) {
       return res.status(404).json({ message: 'Пользователь не найден' })
     }
 
-    user.isActive = isActive
+    user.status = status
     await user.save()
 
     res.json({ user })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || 'Ошибка сервера' })
+  }
+})
+
+// Impersonate user (admin only)
+router.post('/:id/impersonate', adminAuth, async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' })
+    }
+
+    // Generate token for target user
+    const token = generateToken(user._id.toString())
+
+    res.json({
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        telegramId: user.telegramId,
+        status: user.status,
+      },
+      token,
+      impersonatedBy: req.user!._id,
+    })
   } catch (error: any) {
     res.status(500).json({ message: error.message || 'Ошибка сервера' })
   }

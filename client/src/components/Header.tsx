@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
-import { Menu, X, User } from 'lucide-react'
+import { Menu, X, User, LogOut } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 
 const navLinks = [
@@ -13,10 +13,29 @@ const navLinks = [
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
-  const { isAuthenticated, user } = useAuthStore()
+  const { isAuthenticated, user, isImpersonating, stopImpersonation, originalUser } = useAuthStore()
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100">
+    <>
+      {/* Impersonation Banner */}
+      {isImpersonating && (
+        <div className="bg-amber-500 text-white text-sm py-2 px-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <span>
+              Вы вошли как <strong>{user?.name}</strong> (имперсонализация от {originalUser?.name})
+            </span>
+            <button
+              onClick={stopImpersonation}
+              className="flex items-center gap-1 px-3 py-1 bg-white/20 hover:bg-white/30 rounded transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              Вернуться к своему аккаунту
+            </button>
+          </div>
+        </div>
+      )}
+      
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -131,5 +150,6 @@ export default function Header() {
         )}
       </div>
     </header>
+    </>
   )
 }

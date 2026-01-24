@@ -19,7 +19,8 @@ router.post('/register', async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Пользователь с таким email уже существует' })
     }
 
-    const user = new User({ email, password, name })
+    // New users start with pending status - needs admin approval
+    const user = new User({ email, password, name, status: 'pending' })
     await user.save()
 
     const token = generateToken(user._id.toString())
@@ -30,6 +31,7 @@ router.post('/register', async (req: Request, res: Response) => {
         email: user.email,
         name: user.name,
         role: user.role,
+        status: user.status,
       },
       token,
     })
@@ -52,6 +54,16 @@ router.post('/login', async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Неверный email или пароль' })
     }
 
+    // Check if user is blocked
+    if (user.status === 'blocked') {
+      return res.status(403).json({ message: 'Ваш аккаунт заблокирован' })
+    }
+
+    // Check if user is pending
+    if (user.status === 'pending') {
+      return res.status(403).json({ message: 'Ваш аккаунт ожидает подтверждения администратором' })
+    }
+
     const isMatch = await user.comparePassword(password)
     if (!isMatch) {
       return res.status(401).json({ message: 'Неверный email или пароль' })
@@ -65,6 +77,7 @@ router.post('/login', async (req: Request, res: Response) => {
         email: user.email,
         name: user.name,
         role: user.role,
+        status: user.status,
       },
       token,
     })
@@ -98,11 +111,18 @@ router.post('/telegram', async (req: Request, res: Response) => {
     let user = await User.findOne({ telegramId: tgUser.id })
     
     if (!user) {
+      // New Telegram users start with pending status
       user = new User({
         telegramId: tgUser.id,
         name: `${tgUser.first_name} ${tgUser.last_name || ''}`.trim(),
+        status: 'pending',
       })
       await user.save()
+    }
+
+    // Check if user is blocked
+    if (user.status === 'blocked') {
+      return res.status(403).json({ message: 'Ваш аккаунт заблокирован' })
     }
 
     const token = generateToken(user._id.toString())
@@ -114,6 +134,7 @@ router.post('/telegram', async (req: Request, res: Response) => {
         name: user.name,
         role: user.role,
         telegramId: user.telegramId,
+        status: user.status,
       },
       token,
     })
@@ -132,6 +153,7 @@ router.get('/me', auth, async (req: AuthRequest, res: Response) => {
         name: req.user!.name,
         role: req.user!.role,
         telegramId: req.user!.telegramId,
+        status: req.user!.status,
       },
     })
   } catch (error: any) {

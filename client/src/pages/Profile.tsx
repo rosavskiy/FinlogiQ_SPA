@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { User, Mail, Settings, LogOut, Shield, Bell, CreditCard, FileText } from 'lucide-react'
+import { User, Mail, Settings, LogOut, Shield, Bell, CreditCard, FileText, Home, ExternalLink } from 'lucide-react'
 import { useTelegram } from '../context/TelegramContext'
 import { useAuthStore } from '../store/authStore'
 
@@ -148,6 +148,28 @@ export default function Profile() {
             <LogOut className="w-5 h-5" />
             Выйти из аккаунта
           </button>
+
+          {/* Link to main site - only on desktop (not in Telegram/PWA where bottom nav exists) */}
+          {!isTelegram && (
+            <Link
+              to="/"
+              className="hidden md:flex w-full mt-4 items-center justify-center gap-2 p-4 bg-gray-50 text-gray-700 rounded-xl hover:bg-gray-100 transition-colors font-medium"
+            >
+              <ExternalLink className="w-5 h-5" />
+              Перейти на главную
+            </Link>
+          )}
+
+          {/* Admin link */}
+          {user.role === 'admin' && (
+            <Link
+              to="/admin"
+              className="w-full mt-4 flex items-center justify-center gap-2 p-4 bg-primary-50 text-primary-700 rounded-xl hover:bg-primary-100 transition-colors font-medium"
+            >
+              <Shield className="w-5 h-5" />
+              Админ-панель
+            </Link>
+          )}
         </div>
       </section>
     </div>

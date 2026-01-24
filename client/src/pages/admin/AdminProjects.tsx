@@ -1,21 +1,17 @@
-import { useState } from 'react'
-import { Plus, Pencil, Trash2, Search, MoreVertical } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Plus, Pencil, Trash2, Search, Loader2 } from 'lucide-react'
+import { projectsApi } from '../../services/api'
 
 interface Project {
-  id: number
+  _id: string
   title: string
+  slug: string
+  description: string
   category: string
   status: 'active' | 'completed' | 'upcoming'
   isPublished: boolean
   createdAt: string
 }
-
-const mockProjects: Project[] = [
-  { id: 1, title: 'Выпуск облигаций ООО "Технопром"', category: 'Облигации', status: 'active', isPublished: true, createdAt: '2026-01-15' },
-  { id: 2, title: 'Криптокарта для ИП Иванов', category: 'Крипто', status: 'completed', isPublished: true, createdAt: '2026-01-10' },
-  { id: 3, title: 'Финансовая модель "СтройГрупп"', category: 'Аналитика', status: 'active', isPublished: true, createdAt: '2026-01-08' },
-  { id: 4, title: 'Due Diligence "АгроХолдинг"', category: 'Консалтинг', status: 'upcoming', isPublished: false, createdAt: '2026-01-05' },
-]
 
 const statusLabels = {
   active: { label: 'Активный', class: 'bg-green-100 text-green-700' },
@@ -23,14 +19,115 @@ const statusLabels = {
   upcoming: { label: 'Планируется', class: 'bg-blue-100 text-blue-700' },
 }
 
+const categories = ['Облигации', 'Крипто', 'Аналитика', 'Консалтинг']
+
 export default function AdminProjects() {
-  const [projects] = useState<Project[]>(mockProjects)
+  const [projects, setProjects] = useState<Project[]>([])
   const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [editingProject, setEditingProject] = useState<Project | null>(null)
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    category: 'Облигации',
+    status: 'active' as 'active' | 'completed' | 'upcoming',
+    isPublished: true,
+  })
+  const [saving, setSaving] = useState(false)
+
+  const fetchProjects = async () => {
+    try {
+      setLoading(true)
+      const response = await projectsApi.getAllAdmin()
+      setProjects(response.data.projects || [])
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Ошибка загрузки проектов')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchProjects()
+  }, [])
 
   const filteredProjects = projects.filter(p => 
     p.title.toLowerCase().includes(search.toLowerCase())
   )
+
+  const handleOpenModal = (project?: Project) => {
+    if (project) {
+      setEditingProject(project)
+      setFormData({
+        title: project.title,
+        description: project.description,
+        category: project.category,
+        status: project.status,
+        isPublished: project.isPublished,
+      })
+    } else {
+      setEditingProject(null)
+      setFormData({
+        title: '',
+        description: '',
+        category: 'Облигации',
+        status: 'active',
+        isPublished: true,
+      })
+    }
+    setShowModal(true)
+  }
+
+  const handleSave = async () => {
+    if (!formData.title.trim() || !formData.description.trim()) {
+      alert('Заполните название и описание')
+      return
+    }
+
+    try {
+      setSaving(true)
+      if (editingProject) {
+        await projectsApi.update(editingProject._id, formData)
+      } else {
+        await projectsApi.create(formData)
+      }
+      setShowModal(false)
+      fetchProjects()
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Ошибка сохранения')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Удалить этот проект?')) return
+    
+    try {
+      await projectsApi.delete(id)
+      fetchProjects()
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Ошибка удаления')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+        {error}
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -40,7 +137,7 @@ export default function AdminProjects() {
           <p className="text-gray-600">Управление проектами компании</p>
         </div>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => handleOpenModal()}
           className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
         >
           <Plus className="w-5 h-5" />
@@ -76,7 +173,7 @@ export default function AdminProjects() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredProjects.map((project) => (
-                <tr key={project.id} className="hover:bg-gray-50">
+                <tr key={project._id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
                     <p className="font-medium text-gray-900">{project.title}</p>
                   </td>
@@ -98,10 +195,16 @@ export default function AdminProjects() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2">
-                      <button className="p-1 text-gray-400 hover:text-primary-600 transition-colors">
+                      <button 
+                        onClick={() => handleOpenModal(project)}
+                        className="p-1 text-gray-400 hover:text-primary-600 transition-colors"
+                      >
                         <Pencil className="w-4 h-4" />
                       </button>
-                      <button className="p-1 text-gray-400 hover:text-red-600 transition-colors">
+                      <button 
+                        onClick={() => handleDelete(project._id)}
+                        className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -119,28 +222,67 @@ export default function AdminProjects() {
         )}
       </div>
 
-      {/* Modal placeholder */}
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Новый проект</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-4">
+              {editingProject ? 'Редактировать проект' : 'Новый проект'}
+            </h3>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Название</label>
-                <input type="text" className="w-full px-3 py-2 border border-gray-200 rounded-lg" />
+                <input 
+                  type="text" 
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none" 
+                />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Категория</label>
-                <select className="w-full px-3 py-2 border border-gray-200 rounded-lg">
-                  <option>Облигации</option>
-                  <option>Крипто</option>
-                  <option>Аналитика</option>
-                  <option>Консалтинг</option>
-                </select>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Категория</label>
+                  <select 
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
+                  >
+                    {categories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Статус</label>
+                  <select 
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
+                  >
+                    <option value="active">Активный</option>
+                    <option value="completed">Завершён</option>
+                    <option value="upcoming">Планируется</option>
+                  </select>
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Описание</label>
-                <textarea rows={3} className="w-full px-3 py-2 border border-gray-200 rounded-lg" />
+                <textarea 
+                  rows={3} 
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none" 
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <input 
+                  type="checkbox" 
+                  id="isPublished" 
+                  checked={formData.isPublished}
+                  onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
+                  className="rounded border-gray-300" 
+                />
+                <label htmlFor="isPublished" className="text-sm text-gray-700">Опубликовать</label>
               </div>
             </div>
             <div className="flex justify-end gap-3 mt-6">
@@ -150,8 +292,12 @@ export default function AdminProjects() {
               >
                 Отмена
               </button>
-              <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
-                Создать
+              <button 
+                onClick={handleSave}
+                disabled={saving}
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
+              >
+                {saving ? 'Сохранение...' : (editingProject ? 'Сохранить' : 'Создать')}
               </button>
             </div>
           </div>

@@ -1,8 +1,9 @@
-import { useState } from 'react'
-import { Search, MoreVertical, Shield, User, Ban } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Search, MoreVertical, Shield, User, Ban, Loader2 } from 'lucide-react'
+import { usersApi } from '../../services/api'
 
 interface UserData {
-  id: number
+  _id: string
   name: string
   email: string
   role: 'admin' | 'user'
@@ -11,21 +12,48 @@ interface UserData {
   createdAt: string
 }
 
-const mockUsers: UserData[] = [
-  { id: 1, name: 'Администратор', email: 'admin@finlogiq.ru', role: 'admin', isActive: true, createdAt: '2026-01-01' },
-  { id: 2, name: 'Иван Петров', email: 'ivan@example.com', role: 'user', telegramId: 123456789, isActive: true, createdAt: '2026-01-15' },
-  { id: 3, name: 'Мария Сидорова', email: 'maria@company.ru', role: 'user', isActive: true, createdAt: '2026-01-18' },
-  { id: 4, name: 'Алексей Козлов', email: 'alex@firm.com', role: 'user', telegramId: 987654321, isActive: false, createdAt: '2026-01-20' },
-]
-
 export default function AdminUsers() {
-  const [users] = useState<UserData[]>(mockUsers)
+  const [users, setUsers] = useState<UserData[]>([])
   const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true)
+      const response = await usersApi.getAll(1, 100)
+      setUsers(response.data.users || [])
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Ошибка загрузки пользователей')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
 
   const filteredUsers = users.filter(u => 
     u.name.toLowerCase().includes(search.toLowerCase()) ||
-    u.email.toLowerCase().includes(search.toLowerCase())
+    u.email?.toLowerCase().includes(search.toLowerCase())
   )
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+        {error}
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -62,7 +90,7 @@ export default function AdminUsers() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
+                <tr key={user._id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${user.role === 'admin' ? 'bg-purple-100' : 'bg-gray-100'}`}>

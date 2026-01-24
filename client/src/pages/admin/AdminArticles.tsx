@@ -1,30 +1,131 @@
-import { useState } from 'react'
-import { Plus, Pencil, Trash2, Search, Eye } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Plus, Pencil, Trash2, Search, Eye, Loader2 } from 'lucide-react'
+import { articlesApi } from '../../services/api'
 
 interface Article {
-  id: number
+  _id: string
   title: string
+  slug: string
+  excerpt: string
+  content: string
   category: string
+  readTime: string
   isPublished: boolean
-  views: number
   createdAt: string
 }
 
-const mockArticles: Article[] = [
-  { id: 1, title: 'Как выпустить облигации: пошаговое руководство', category: 'Облигации', isPublished: true, views: 1250, createdAt: '2026-01-20' },
-  { id: 2, title: 'Криптовалюта для бизнеса: возможности и риски', category: 'Крипто', isPublished: true, views: 890, createdAt: '2026-01-15' },
-  { id: 3, title: 'ESG-рейтинги: зачем они нужны эмитенту', category: 'Аналитика', isPublished: true, views: 654, createdAt: '2026-01-10' },
-  { id: 4, title: 'Тренды рынка ВДО в 2026 году', category: 'Рынки', isPublished: false, views: 0, createdAt: '2026-01-05' },
-]
+const categories = ['Облигации', 'Крипто', 'Аналитика', 'Рынки', 'Консалтинг']
 
 export default function AdminArticles() {
-  const [articles] = useState<Article[]>(mockArticles)
+  const [articles, setArticles] = useState<Article[]>([])
   const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [editingArticle, setEditingArticle] = useState<Article | null>(null)
+  const [formData, setFormData] = useState({
+    title: '',
+    excerpt: '',
+    content: '',
+    category: 'Облигации',
+    readTime: '5 мин',
+    isPublished: false,
+  })
+  const [saving, setSaving] = useState(false)
+
+  const fetchArticles = async () => {
+    try {
+      setLoading(true)
+      const response = await articlesApi.getAllAdmin()
+      setArticles(response.data.articles || [])
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Ошибка загрузки статей')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchArticles()
+  }, [])
 
   const filteredArticles = articles.filter(a => 
     a.title.toLowerCase().includes(search.toLowerCase())
   )
+
+  const handleOpenModal = (article?: Article) => {
+    if (article) {
+      setEditingArticle(article)
+      setFormData({
+        title: article.title,
+        excerpt: article.excerpt,
+        content: article.content,
+        category: article.category,
+        readTime: article.readTime,
+        isPublished: article.isPublished,
+      })
+    } else {
+      setEditingArticle(null)
+      setFormData({
+        title: '',
+        excerpt: '',
+        content: '',
+        category: 'Облигации',
+        readTime: '5 мин',
+        isPublished: false,
+      })
+    }
+    setShowModal(true)
+  }
+
+  const handleSave = async () => {
+    if (!formData.title.trim() || !formData.excerpt.trim() || !formData.content.trim()) {
+      alert('Заполните заголовок, описание и содержимое')
+      return
+    }
+
+    try {
+      setSaving(true)
+      if (editingArticle) {
+        await articlesApi.update(editingArticle._id, formData)
+      } else {
+        await articlesApi.create(formData)
+      }
+      setShowModal(false)
+      fetchArticles()
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Ошибка сохранения')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Удалить эту статью?')) return
+    
+    try {
+      await articlesApi.delete(id)
+      fetchArticles()
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Ошибка удаления')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+        {error}
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -34,7 +135,7 @@ export default function AdminArticles() {
           <p className="text-gray-600">Управление публикациями</p>
         </div>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => handleOpenModal()}
           className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
         >
           <Plus className="w-5 h-5" />
@@ -57,7 +158,7 @@ export default function AdminArticles() {
       {/* Articles grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredArticles.map((article) => (
-          <div key={article.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+          <div key={article._id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
@@ -70,18 +171,21 @@ export default function AdminArticles() {
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{article.title}</h3>
                 <div className="flex items-center gap-4 text-sm text-gray-500">
-                  <span className="flex items-center gap-1">
-                    <Eye className="w-4 h-4" />
-                    {article.views}
-                  </span>
+                  <span>{article.readTime}</span>
                   <span>{new Date(article.createdAt).toLocaleDateString('ru-RU')}</span>
                 </div>
               </div>
               <div className="flex items-center gap-1 ml-4">
-                <button className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
+                <button 
+                  onClick={() => handleOpenModal(article)}
+                  className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+                >
                   <Pencil className="w-4 h-4" />
                 </button>
-                <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                <button 
+                  onClick={() => handleDelete(article._id)}
+                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -100,38 +204,70 @@ export default function AdminArticles() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Новая статья</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-4">
+              {editingArticle ? 'Редактировать статью' : 'Новая статья'}
+            </h3>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок</label>
-                <input type="text" className="w-full px-3 py-2 border border-gray-200 rounded-lg" />
+                <input 
+                  type="text" 
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none" 
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Категория</label>
-                  <select className="w-full px-3 py-2 border border-gray-200 rounded-lg">
-                    <option>Облигации</option>
-                    <option>Крипто</option>
-                    <option>Аналитика</option>
-                    <option>Рынки</option>
-                    <option>Консалтинг</option>
+                  <select 
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
+                  >
+                    {categories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Время чтения</label>
-                  <input type="text" placeholder="5 мин" className="w-full px-3 py-2 border border-gray-200 rounded-lg" />
+                  <input 
+                    type="text" 
+                    placeholder="5 мин" 
+                    value={formData.readTime}
+                    onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none" 
+                  />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Краткое описание</label>
-                <textarea rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg" />
+                <textarea 
+                  rows={2} 
+                  value={formData.excerpt}
+                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none" 
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Содержимое</label>
-                <textarea rows={10} className="w-full px-3 py-2 border border-gray-200 rounded-lg" placeholder="Поддерживается Markdown..." />
+                <textarea 
+                  rows={10} 
+                  value={formData.content}
+                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none" 
+                  placeholder="Поддерживается Markdown..." 
+                />
               </div>
               <div className="flex items-center gap-2">
-                <input type="checkbox" id="publish" className="rounded border-gray-300" />
+                <input 
+                  type="checkbox" 
+                  id="publish" 
+                  checked={formData.isPublished}
+                  onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
+                  className="rounded border-gray-300" 
+                />
                 <label htmlFor="publish" className="text-sm text-gray-700">Опубликовать сразу</label>
               </div>
             </div>
@@ -142,8 +278,12 @@ export default function AdminArticles() {
               >
                 Отмена
               </button>
-              <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
-                Сохранить
+              <button 
+                onClick={handleSave}
+                disabled={saving}
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
+              >
+                {saving ? 'Сохранение...' : 'Сохранить'}
               </button>
             </div>
           </div>

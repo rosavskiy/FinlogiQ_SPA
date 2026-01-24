@@ -73,6 +73,9 @@ export const projectsApi = {
   getAll: (page = 1, limit = 10, category?: string) =>
     api.get('/projects', { params: { page, limit, category } }),
   
+  getAllAdmin: (page = 1, limit = 10) =>
+    api.get('/projects/admin/all', { params: { page, limit } }),
+  
   getBySlug: (slug: string) =>
     api.get(`/projects/slug/${slug}`),
   
@@ -93,6 +96,9 @@ export const projectsApi = {
 export const articlesApi = {
   getAll: (page = 1, limit = 10, category?: string) =>
     api.get('/articles', { params: { page, limit, category } }),
+  
+  getAllAdmin: (page = 1, limit = 10) =>
+    api.get('/articles/admin/all', { params: { page, limit } }),
   
   getCategories: () =>
     api.get('/articles/categories'),
@@ -132,6 +138,12 @@ export const contactApi = {
   
   delete: (id: string) =>
     api.delete(`/contact/${id}`),
+}
+
+// Stats API (Dashboard)
+export const statsApi = {
+  getDashboard: () =>
+    api.get('/stats/dashboard'),
 }
 
 export default api

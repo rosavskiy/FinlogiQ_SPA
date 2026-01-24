@@ -1,73 +1,42 @@
 import { useEffect, useState } from 'react'
-import { Calendar, Clock, ArrowRight, Tag } from 'lucide-react'
+import { Calendar, Clock, ArrowRight, Tag, Loader2 } from 'lucide-react'
 import { useTelegram } from '../context/TelegramContext'
+import { articlesApi } from '../services/api'
 
 interface Article {
-  id: number
+  _id: string
   title: string
   excerpt: string
   category: string
   readTime: string
-  date: string
-  image?: string
+  createdAt: string
+  slug: string
 }
 
-const articles: Article[] = [
-  {
-    id: 1,
-    title: 'Как выпустить облигации: пошаговое руководство',
-    excerpt: 'Подробный гайд по выпуску биржевых облигаций для среднего бизнеса: от подготовки до размещения',
-    category: 'Облигации',
-    readTime: '10 мин',
-    date: '20 января 2026',
-  },
-  {
-    id: 2,
-    title: 'Криптовалюта для бизнеса: возможности и риски',
-    excerpt: 'Обзор способов интеграции криптовалютных платежей в бизнес-процессы компании',
-    category: 'Крипто',
-    readTime: '7 мин',
-    date: '15 января 2026',
-  },
-  {
-    id: 3,
-    title: 'ESG-рейтинги: зачем они нужны эмитенту',
-    excerpt: 'Как ESG-факторы влияют на стоимость привлечения капитала и интерес инвесторов',
-    category: 'Аналитика',
-    readTime: '5 мин',
-    date: '10 января 2026',
-  },
-  {
-    id: 4,
-    title: 'Тренды рынка ВДО в 2026 году',
-    excerpt: 'Прогнозы и ожидания от рынка высокодоходных облигаций в текущем году',
-    category: 'Рынки',
-    readTime: '8 мин',
-    date: '5 января 2026',
-  },
-  {
-    id: 5,
-    title: 'Финансовое моделирование: лучшие практики',
-    excerpt: 'Как построить надёжную финансовую модель для привлечения инвестиций',
-    category: 'Аналитика',
-    readTime: '12 мин',
-    date: '28 декабря 2025',
-  },
-  {
-    id: 6,
-    title: 'Due Diligence: на что обращают внимание инвесторы',
-    excerpt: 'Чек-лист подготовки компании к проверке со стороны инвесторов и кредиторов',
-    category: 'Консалтинг',
-    readTime: '6 мин',
-    date: '20 декабря 2025',
-  },
-]
-
-const categories = ['Все', 'Облигации', 'Крипто', 'Аналитика', 'Рынки', 'Консалтинг']
-
 export default function Interesting() {
+  const [articles, setArticles] = useState<Article[]>([])
+  const [categories, setCategories] = useState<string[]>(['Все'])
   const [selectedCategory, setSelectedCategory] = useState('Все')
+  const [loading, setLoading] = useState(true)
   const { showBackButton, hideBackButton, isTelegram, hapticFeedback } = useTelegram()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [articlesRes, categoriesRes] = await Promise.all([
+          articlesApi.getAll(1, 50),
+          articlesApi.getCategories()
+        ])
+        setArticles(articlesRes.data.articles || [])
+        setCategories(['Все', ...(categoriesRes.data.categories || [])])
+      } catch (err) {
+        console.error('Error loading articles:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
 
   useEffect(() => {
     if (isTelegram) {
@@ -85,6 +54,14 @@ export default function Interesting() {
     if (isTelegram) {
       hapticFeedback('selection')
     }
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    })
   }
 
   return (
@@ -125,62 +102,68 @@ export default function Interesting() {
       {/* Articles */}
       <section className="py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredArticles.map((article, index) => (
-              <article
-                key={article.id}
-                className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 animate-slide-up cursor-pointer"
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
-                {/* Image placeholder */}
-                <div className="aspect-[16/9] bg-gradient-to-br from-primary-50 to-primary-100 relative">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 bg-primary-500/20 rounded-xl flex items-center justify-center">
-                      <span className="text-xl font-bold text-primary-600">{article.id}</span>
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredArticles.map((article, index) => (
+                <article
+                  key={article._id}
+                  className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 animate-slide-up cursor-pointer"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  {/* Image placeholder */}
+                  <div className="aspect-[16/9] bg-gradient-to-br from-primary-50 to-primary-100 relative">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-12 h-12 bg-primary-500/20 rounded-xl flex items-center justify-center">
+                        <span className="text-xl font-bold text-primary-600">{index + 1}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="p-5">
-                  {/* Meta */}
-                  <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
-                    <span className="flex items-center gap-1">
-                      <Tag className="w-3 h-3" />
-                      {article.category}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {article.readTime}
-                    </span>
+                  <div className="p-5">
+                    {/* Meta */}
+                    <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
+                      <span className="flex items-center gap-1">
+                        <Tag className="w-3 h-3" />
+                        {article.category}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {article.readTime}
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">
+                      {article.title}
+                    </h3>
+
+                    {/* Excerpt */}
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                      {article.excerpt}
+                    </p>
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1 text-xs text-gray-400">
+                        <Calendar className="w-3 h-3" />
+                        {formatDate(article.createdAt)}
+                      </span>
+                      <span className="flex items-center gap-1 text-primary-600 text-sm font-medium group-hover:gap-2 transition-all">
+                        Читать
+                        <ArrowRight className="w-4 h-4" />
+                      </span>
+                    </div>
                   </div>
+                </article>
+              ))}
+            </div>
+          )}
 
-                  {/* Title */}
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">
-                    {article.title}
-                  </h3>
-
-                  {/* Excerpt */}
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                    {article.excerpt}
-                  </p>
-
-                  {/* Footer */}
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1 text-xs text-gray-400">
-                      <Calendar className="w-3 h-3" />
-                      {article.date}
-                    </span>
-                    <span className="flex items-center gap-1 text-primary-600 text-sm font-medium group-hover:gap-2 transition-all">
-                      Читать
-                      <ArrowRight className="w-4 h-4" />
-                    </span>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {filteredArticles.length === 0 && (
+          {!loading && filteredArticles.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-500">В этой категории пока нет статей</p>
             </div>

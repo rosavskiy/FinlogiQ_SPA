@@ -1,8 +1,9 @@
-import { useState } from 'react'
-import { Mail, Phone, Clock, Check, Reply, Trash2, Eye } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Mail, Phone, Clock, Check, Reply, Trash2, Eye, Loader2 } from 'lucide-react'
+import { contactApi } from '../../services/api'
 
 interface Contact {
-  id: number
+  _id: string
   name: string
   email: string
   phone?: string
@@ -11,13 +12,6 @@ interface Contact {
   createdAt: string
 }
 
-const mockContacts: Contact[] = [
-  { id: 1, name: 'Иван Петров', email: 'ivan@example.com', phone: '+7 999 123-45-67', message: 'Добрый день! Интересует выпуск облигаций для нашей компании. Оборот около 500 млн рублей в год. Хотели бы обсудить условия и сроки.', status: 'new', createdAt: '2026-01-23T14:30:00' },
-  { id: 2, name: 'Мария Сидорова', email: 'maria@company.ru', message: 'Здравствуйте! Хотим обсудить сотрудничество в сфере финансового консалтинга. Когда можно созвониться?', status: 'new', createdAt: '2026-01-23T10:15:00' },
-  { id: 3, name: 'Алексей Козлов', email: 'alex@firm.com', phone: '+7 916 555-00-00', message: 'Нужна консультация по криптокартам для бизнеса. Есть несколько вопросов по комплаенсу.', status: 'read', createdAt: '2026-01-22T16:45:00' },
-  { id: 4, name: 'Ольга Новикова', email: 'olga@startup.io', message: 'Интересует финансовое моделирование для нашего стартапа перед раундом инвестиций.', status: 'replied', createdAt: '2026-01-21T09:00:00' },
-]
-
 const statusConfig = {
   new: { label: 'Новая', class: 'bg-orange-100 text-orange-700', icon: Clock },
   read: { label: 'Прочитано', class: 'bg-blue-100 text-blue-700', icon: Eye },
@@ -25,9 +19,27 @@ const statusConfig = {
 }
 
 export default function AdminContacts() {
-  const [contacts, setContacts] = useState<Contact[]>(mockContacts)
+  const [contacts, setContacts] = useState<Contact[]>([])
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
   const [filter, setFilter] = useState<'all' | 'new' | 'read' | 'replied'>('all')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetchContacts = async () => {
+    try {
+      setLoading(true)
+      const response = await contactApi.getAll(1, 100, filter === 'all' ? undefined : filter)
+      setContacts(response.data.contacts || [])
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Ошибка загрузки заявок')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchContacts()
+  }, [filter])
 
   const filteredContacts = contacts.filter(c => 
     filter === 'all' || c.status === filter
@@ -35,16 +47,56 @@ export default function AdminContacts() {
 
   const newCount = contacts.filter(c => c.status === 'new').length
 
-  const handleMarkAsRead = (id: number) => {
-    setContacts(contacts.map(c => 
-      c.id === id ? { ...c, status: 'read' as const } : c
-    ))
+  const handleMarkAsRead = async (id: string) => {
+    try {
+      await contactApi.updateStatus(id, 'read')
+      setContacts(contacts.map(c => 
+        c._id === id ? { ...c, status: 'read' as const } : c
+      ))
+    } catch (err) {
+      console.error('Ошибка обновления статуса', err)
+    }
   }
 
-  const handleMarkAsReplied = (id: number) => {
-    setContacts(contacts.map(c => 
-      c.id === id ? { ...c, status: 'replied' as const } : c
-    ))
+  const handleMarkAsReplied = async (id: string) => {
+    try {
+      await contactApi.updateStatus(id, 'replied')
+      setContacts(contacts.map(c => 
+        c._id === id ? { ...c, status: 'replied' as const } : c
+      ))
+    } catch (err) {
+      console.error('Ошибка обновления статуса', err)
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Удалить эту заявку?')) return
+    
+    try {
+      await contactApi.delete(id)
+      setContacts(contacts.filter(c => c._id !== id))
+      if (selectedContact?._id === id) {
+        setSelectedContact(null)
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Ошибка удаления')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+        {error}
+      </div>
+    )
   }
 
   return (
@@ -82,13 +134,13 @@ export default function AdminContacts() {
           const StatusIcon = statusConfig[contact.status].icon
           return (
             <div 
-              key={contact.id} 
+              key={contact._id} 
               className={`bg-white rounded-xl shadow-sm border p-4 cursor-pointer transition-all hover:shadow-md ${
                 contact.status === 'new' ? 'border-orange-200' : 'border-gray-100'
               }`}
               onClick={() => {
                 setSelectedContact(contact)
-                if (contact.status === 'new') handleMarkAsRead(contact.id)
+                if (contact.status === 'new') handleMarkAsRead(contact._id)
               }}
             >
               <div className="flex items-start justify-between">
@@ -176,7 +228,7 @@ export default function AdminContacts() {
               <div className="flex gap-2">
                 <a
                   href={`mailto:${selectedContact.email}`}
-                  onClick={() => handleMarkAsReplied(selectedContact.id)}
+                  onClick={() => handleMarkAsReplied(selectedContact._id)}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
                 >
                   <Reply className="w-4 h-4" />

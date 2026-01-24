@@ -1,4 +1,4 @@
-import { Outlet, NavLink, Navigate } from 'react-router-dom'
+import { Outlet, NavLink, Navigate, Link } from 'react-router-dom'
 import { 
   LayoutDashboard, 
   FolderKanban, 
@@ -8,7 +8,8 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  ExternalLink
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAuthStore } from '../../store/authStore'
@@ -86,6 +87,15 @@ export default function AdminLayout() {
         </nav>
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
+          {/* Link to main site */}
+          <Link
+            to="/"
+            className="flex items-center gap-3 w-full px-3 py-2 mb-2 text-gray-400 hover:bg-gray-800 hover:text-white rounded-lg transition-colors"
+          >
+            <ExternalLink className="w-5 h-5" />
+            Перейти на сайт
+          </Link>
+          
           <div className="flex items-center gap-3 mb-3 px-3">
             <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-medium">

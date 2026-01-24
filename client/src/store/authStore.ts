@@ -14,12 +14,13 @@ interface User {
 interface AuthState {
   user: User | null
   token: string | null
-  isAuthenticated: boolean
   isLoading: boolean
   // Impersonation support
   originalUser: User | null
   originalToken: string | null
   isImpersonating: boolean
+  // Computed
+  isAuthenticated: boolean
   setUser: (user: User | null) => void
   setToken: (token: string | null) => void
   login: (user: User, token: string) => void
@@ -35,18 +36,21 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       token: null,
-      isAuthenticated: false,
-      isLoading: true,
+      isLoading: false,
       originalUser: null,
       originalToken: null,
       isImpersonating: false,
-      setUser: (user) => set({ user, isAuthenticated: !!user }),
+      // Computed property - true if we have both user and token
+      get isAuthenticated() {
+        const state = get()
+        return !!(state.user && state.token)
+      },
+      setUser: (user) => set({ user }),
       setToken: (token) => set({ token }),
-      login: (user, token) => set({ user, token, isAuthenticated: true }),
+      login: (user, token) => set({ user, token }),
       logout: () => set({ 
         user: null, 
         token: null, 
-        isAuthenticated: false,
         originalUser: null,
         originalToken: null,
         isImpersonating: false,

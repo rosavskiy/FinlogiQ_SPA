@@ -17,8 +17,8 @@ export const auth = async (req: AuthRequest, res: Response, next: NextFunction) 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as { id: string }
     const user = await User.findById(decoded.id)
 
-    if (!user || !user.isActive) {
-      return res.status(401).json({ message: 'Пользователь не найден' })
+    if (!user || user.status === 'blocked') {
+      return res.status(401).json({ message: 'Пользователь не найден или заблокирован' })
     }
 
     req.user = user

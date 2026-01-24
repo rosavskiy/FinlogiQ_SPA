@@ -45,7 +45,7 @@ export default function Header() {
     : 'bg-primary-50 text-primary-700'
 
   return (
-    <>
+    <div className="fixed top-0 left-0 right-0 z-[100]">
       {/* Impersonation Banner */}
       {isImpersonating && (
         <div className="bg-amber-500 text-white text-sm py-2 px-4">
@@ -64,7 +64,7 @@ export default function Header() {
         </div>
       )}
       
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerBg}`}>
+      <header className={`transition-all duration-300 ${headerBg}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -197,6 +197,6 @@ export default function Header() {
         )}
       </div>
     </header>
-    </>
+    </div>
   )
 }

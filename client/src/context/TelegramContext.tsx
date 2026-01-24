@@ -118,7 +118,9 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const tg = window.Telegram?.WebApp
 
-    if (tg) {
+    // Only consider it a real Telegram WebApp if initData is present
+    // This prevents false positives from browser extensions
+    if (tg && tg.initData && tg.initData.length > 0) {
       setWebApp(tg)
       setUser(tg.initDataUnsafe?.user || null)
       

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Menu, X, User, LogOut } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 
@@ -12,8 +12,37 @@ const navLinks = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const location = useLocation()
   const { isAuthenticated, user, isImpersonating, stopImpersonation, originalUser } = useAuthStore()
+  
+  const isHomePage = location.pathname === '/'
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // On homepage: transparent header until scrolled, then white
+  // On other pages: always white
+  const headerBg = isHomePage && !isScrolled
+    ? 'bg-transparent'
+    : 'bg-white/95 backdrop-blur-lg border-b border-gray-100'
+  
+  const textColor = isHomePage && !isScrolled
+    ? 'text-white'
+    : 'text-gray-900'
+  
+  const linkColor = isHomePage && !isScrolled
+    ? 'text-white/80 hover:text-white hover:bg-white/10'
+    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+  
+  const activeLinkColor = isHomePage && !isScrolled
+    ? 'bg-white/20 text-white'
+    : 'bg-primary-50 text-primary-700'
 
   return (
     <>
@@ -35,15 +64,15 @@ export default function Header() {
         </div>
       )}
       
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100">
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerBg}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isHomePage && !isScrolled ? 'bg-white/20' : 'bg-gradient-to-br from-primary-600 to-primary-800'}`}>
               <span className="text-white font-bold text-xl">F</span>
             </div>
-            <span className="font-bold text-xl text-gray-900">FinlogiQ</span>
+            <span className={`font-bold text-xl ${textColor}`}>FinlogiQ</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -54,8 +83,8 @@ export default function Header() {
                 to={link.path}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   location.pathname === link.path
-                    ? 'bg-primary-50 text-primary-700'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? activeLinkColor
+                    : linkColor
                 }`}
               >
                 {link.label}
@@ -68,7 +97,11 @@ export default function Header() {
             {isAuthenticated ? (
               <Link
                 to="/profile"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                  isHomePage && !isScrolled 
+                    ? 'bg-white/20 hover:bg-white/30 text-white' 
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                }`}
               >
                 <User className="w-4 h-4" />
                 <span className="text-sm font-medium">{user?.name || 'Профиль'}</span>
@@ -77,13 +110,19 @@ export default function Header() {
               <>
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    isHomePage && !isScrolled ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-gray-900'
+                  }`}
                 >
                   Войти
                 </Link>
                 <Link
                   to="/register"
-                  className="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    isHomePage && !isScrolled 
+                      ? 'bg-white text-primary-700 hover:bg-primary-50' 
+                      : 'text-white bg-primary-600 hover:bg-primary-700'
+                  }`}
                 >
                   Регистрация
                 </Link>
@@ -94,7 +133,9 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className={`md:hidden p-2 rounded-lg transition-colors ${
+              isHomePage && !isScrolled ? 'hover:bg-white/10 text-white' : 'hover:bg-gray-100 text-gray-900'
+            }`}
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -102,7 +143,7 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100 animate-slide-down">
+          <div className={`md:hidden py-4 animate-slide-down ${isHomePage && !isScrolled ? 'border-t border-white/20' : 'border-t border-gray-100 bg-white'}`}>
             <nav className="flex flex-col gap-1">
               {navLinks.map((link) => (
                 <Link
@@ -111,19 +152,21 @@ export default function Header() {
                   onClick={() => setIsMenuOpen(false)}
                   className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                     location.pathname === link.path
-                      ? 'bg-primary-50 text-primary-700'
-                      : 'text-gray-600 hover:bg-gray-50'
+                      ? activeLinkColor
+                      : isHomePage && !isScrolled ? 'text-white/80 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="h-px bg-gray-100 my-2" />
+              <div className={`h-px my-2 ${isHomePage && !isScrolled ? 'bg-white/20' : 'bg-gray-100'}`} />
               {isAuthenticated ? (
                 <Link
                   to="/profile"
                   onClick={() => setIsMenuOpen(false)}
-                  className="px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50"
+                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                    isHomePage && !isScrolled ? 'text-white/80 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
                 >
                   Профиль
                 </Link>
@@ -132,14 +175,18 @@ export default function Header() {
                   <Link
                     to="/login"
                     onClick={() => setIsMenuOpen(false)}
-                    className="px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50"
+                    className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                      isHomePage && !isScrolled ? 'text-white/80 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-50'
+                    }`}
                   >
                     Войти
                   </Link>
                   <Link
                     to="/register"
                     onClick={() => setIsMenuOpen(false)}
-                    className="px-4 py-3 rounded-lg text-sm font-medium text-white bg-primary-600 text-center"
+                    className={`px-4 py-3 rounded-lg text-sm font-medium text-center ${
+                      isHomePage && !isScrolled ? 'bg-white text-primary-700' : 'text-white bg-primary-600'
+                    }`}
                   >
                     Регистрация
                   </Link>

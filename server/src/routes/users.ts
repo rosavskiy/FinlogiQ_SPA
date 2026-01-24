@@ -132,4 +132,46 @@ router.delete('/:id', adminAuth, async (req: AuthRequest, res: Response) => {
   }
 })
 
+// Update user role (admin only)
+router.put('/:id/role', adminAuth, async (req: AuthRequest, res: Response) => {
+  try {
+    const { role } = req.body
+
+    if (!['admin', 'user'].includes(role)) {
+      return res.status(400).json({ message: 'Недопустимая роль' })
+    }
+
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' })
+    }
+
+    user.role = role
+    await user.save()
+
+    res.json({ user })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || 'Ошибка сервера' })
+  }
+})
+
+// Update user active status (admin only)
+router.put('/:id/status', adminAuth, async (req: AuthRequest, res: Response) => {
+  try {
+    const { isActive } = req.body
+
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' })
+    }
+
+    user.isActive = isActive
+    await user.save()
+
+    res.json({ user })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || 'Ошибка сервера' })
+  }
+})
+
 export default router

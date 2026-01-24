@@ -11,6 +11,7 @@ import userRoutes from './routes/users'
 import projectRoutes from './routes/projects'
 import articleRoutes from './routes/articles'
 import contactRoutes from './routes/contact'
+import statsRoutes from './routes/stats'
 
 dotenv.config()
 
@@ -48,6 +49,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/projects', projectRoutes)
 app.use('/api/articles', articleRoutes)
 app.use('/api/contact', contactRoutes)
+app.use('/api/stats', statsRoutes)
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

@@ -10,6 +10,15 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Profile from './pages/Profile'
 import NotFound from './pages/NotFound'
+import {
+  AdminLayout,
+  Dashboard,
+  AdminProjects,
+  AdminArticles,
+  AdminContacts,
+  AdminUsers,
+  AdminSettings,
+} from './pages/admin'
 
 function App() {
   const { isTelegram } = useTelegram()
@@ -17,6 +26,7 @@ function App() {
   return (
     <div className={isTelegram ? 'twa-mode' : ''}>
       <Routes>
+        {/* Main site routes */}
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="projects" element={<Projects />} />
@@ -26,8 +36,19 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="*" element={<NotFound />} />
         </Route>
+
+        {/* Admin routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="projects" element={<AdminProjects />} />
+          <Route path="articles" element={<AdminArticles />} />
+          <Route path="contacts" element={<AdminContacts />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   )

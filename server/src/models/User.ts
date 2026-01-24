@@ -7,7 +7,13 @@ export interface IUser extends Document {
   name: string
   role: 'user' | 'admin'
   telegramId?: number
+  avatar?: string
   status: 'pending' | 'active' | 'blocked'
+  notifications: {
+    email: boolean
+    push: boolean
+    marketing: boolean
+  }
   createdAt: Date
   updatedAt: Date
   comparePassword(candidatePassword: string): Promise<boolean>
@@ -44,10 +50,21 @@ const userSchema = new Schema<IUser>(
       unique: true,
       sparse: true,
     },
+    avatar: {
+      type: String,
+    },
     status: {
       type: String,
       enum: ['pending', 'active', 'blocked'],
       default: 'pending',
+    },
+    notifications: {
+      type: {
+        email: { type: Boolean, default: true },
+        push: { type: Boolean, default: false },
+        marketing: { type: Boolean, default: false },
+      },
+      default: { email: true, push: false, marketing: false },
     },
   },
   {

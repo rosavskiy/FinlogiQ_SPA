@@ -31,7 +31,9 @@ router.post('/register', async (req: Request, res: Response) => {
         email: user.email,
         name: user.name,
         role: user.role,
+        avatar: user.avatar,
         status: user.status,
+        notifications: user.notifications,
       },
       token,
     })
@@ -77,7 +79,9 @@ router.post('/login', async (req: Request, res: Response) => {
         email: user.email,
         name: user.name,
         role: user.role,
+        avatar: user.avatar,
         status: user.status,
+        notifications: user.notifications,
       },
       token,
     })
@@ -115,9 +119,16 @@ router.post('/telegram', async (req: Request, res: Response) => {
       user = new User({
         telegramId: tgUser.id,
         name: `${tgUser.first_name} ${tgUser.last_name || ''}`.trim(),
+        avatar: tgUser.photo_url || undefined,
         status: 'pending',
       })
       await user.save()
+    } else {
+      // Update avatar if it changed in Telegram
+      if (tgUser.photo_url && user.avatar !== tgUser.photo_url) {
+        user.avatar = tgUser.photo_url
+        await user.save()
+      }
     }
 
     // Check if user is blocked
@@ -134,7 +145,9 @@ router.post('/telegram', async (req: Request, res: Response) => {
         name: user.name,
         role: user.role,
         telegramId: user.telegramId,
+        avatar: user.avatar,
         status: user.status,
+        notifications: user.notifications,
       },
       token,
     })
@@ -153,7 +166,9 @@ router.get('/me', auth, async (req: AuthRequest, res: Response) => {
         name: req.user!.name,
         role: req.user!.role,
         telegramId: req.user!.telegramId,
+        avatar: req.user!.avatar,
         status: req.user!.status,
+        notifications: req.user!.notifications,
       },
     })
   } catch (error: any) {

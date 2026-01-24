@@ -64,6 +64,12 @@ export const usersApi = {
   changePassword: (id: string, data: { currentPassword: string; newPassword: string }) =>
     api.put(`/users/${id}/password`, data),
   
+  updateAvatar: (id: string, avatar: string) =>
+    api.put(`/users/${id}/avatar`, { avatar }),
+  
+  updateNotifications: (id: string, data: { email?: boolean; push?: boolean; marketing?: boolean }) =>
+    api.put(`/users/${id}/notifications`, data),
+  
   delete: (id: string) =>
     api.delete(`/users/${id}`),
   

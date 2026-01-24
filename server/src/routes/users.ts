@@ -117,6 +117,64 @@ router.put('/:id/password', auth, async (req: AuthRequest, res: Response) => {
   }
 })
 
+// Update avatar
+router.put('/:id/avatar', auth, async (req: AuthRequest, res: Response) => {
+  try {
+    const { avatar } = req.body
+
+    // Only allow users to update their own avatar
+    if (req.user!._id.toString() !== req.params.id && req.user!.role !== 'admin') {
+      return res.status(403).json({ message: 'Доступ запрещён' })
+    }
+
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' })
+    }
+
+    user.avatar = avatar
+    await user.save()
+
+    res.json({ 
+      message: 'Аватар обновлён',
+      avatar: user.avatar
+    })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || 'Ошибка сервера' })
+  }
+})
+
+// Update notification settings
+router.put('/:id/notifications', auth, async (req: AuthRequest, res: Response) => {
+  try {
+    const { email, push, marketing } = req.body
+
+    // Only allow users to update their own settings
+    if (req.user!._id.toString() !== req.params.id) {
+      return res.status(403).json({ message: 'Доступ запрещён' })
+    }
+
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' })
+    }
+
+    user.notifications = {
+      email: email !== undefined ? email : user.notifications.email,
+      push: push !== undefined ? push : user.notifications.push,
+      marketing: marketing !== undefined ? marketing : user.notifications.marketing,
+    }
+    await user.save()
+
+    res.json({ 
+      message: 'Настройки уведомлений обновлены',
+      notifications: user.notifications
+    })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || 'Ошибка сервера' })
+  }
+})
+
 // Delete user (admin only)
 router.delete('/:id', adminAuth, async (req: AuthRequest, res: Response) => {
   try {

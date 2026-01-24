@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { 
   User, Mail, Settings, LogOut, Shield, Bell, CreditCard, FileText, 
   ExternalLink, ArrowLeft, Save, Eye, EyeOff, Lock, Check, X,
-  Moon, Sun, Globe, Loader2
+  Moon, Sun, Globe, Loader2, Camera
 } from 'lucide-react'
 import { useTelegram } from '../context/TelegramContext'
 import { useAuthStore } from '../store/authStore'
@@ -76,10 +76,18 @@ export default function Profile() {
           
           <div className={`flex ${activeSection === 'menu' ? 'flex-col md:flex-row' : 'flex-row'} items-center gap-4 md:gap-6`}>
             {/* Avatar */}
-            <div className={`${activeSection === 'menu' ? 'w-24 h-24 md:w-32 md:h-32' : 'w-16 h-16'} bg-white/20 rounded-full flex items-center justify-center transition-all`}>
-              <span className={`${activeSection === 'menu' ? 'text-4xl md:text-5xl' : 'text-2xl'} font-bold text-white`}>
-                {user.name.charAt(0).toUpperCase()}
-              </span>
+            <div className={`${activeSection === 'menu' ? 'w-24 h-24 md:w-32 md:h-32' : 'w-16 h-16'} bg-white/20 rounded-full flex items-center justify-center transition-all overflow-hidden`}>
+              {user.avatar ? (
+                <img 
+                  src={user.avatar} 
+                  alt={user.name} 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className={`${activeSection === 'menu' ? 'text-4xl md:text-5xl' : 'text-2xl'} font-bold text-white`}>
+                  {user.name.charAt(0).toUpperCase()}
+                </span>
+              )}
             </div>
 
             {/* Info */}
@@ -112,7 +120,7 @@ export default function Profile() {
           )}
           {activeSection === 'personal' && <PersonalSection user={user} setUser={setUser} />}
           {activeSection === 'security' && <SecuritySection userId={user.id} />}
-          {activeSection === 'notifications' && <NotificationsSection />}
+          {activeSection === 'notifications' && <NotificationsSection user={user} setUser={setUser} />}
           {activeSection === 'subscription' && <SubscriptionSection />}
           {activeSection === 'documents' && <DocumentsSection />}
           {activeSection === 'settings' && <SettingsSection />}
@@ -197,6 +205,7 @@ function PersonalSection({ user, setUser }: { user: any; setUser: (user: any) =>
   const [name, setName] = useState(user.name)
   const [email, setEmail] = useState(user.email || '')
   const [isLoading, setIsLoading] = useState(false)
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -215,10 +224,85 @@ function PersonalSection({ user, setUser }: { user: any; setUser: (user: any) =>
     }
   }
 
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setMessage({ type: 'error', text: 'Пожалуйста, выберите изображение' })
+      return
+    }
+
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'Размер файла не должен превышать 2 МБ' })
+      return
+    }
+
+    setIsUploadingAvatar(true)
+    setMessage(null)
+
+    try {
+      // Convert to base64 for storage
+      const reader = new FileReader()
+      reader.onload = async () => {
+        try {
+          const base64 = reader.result as string
+          await usersApi.updateAvatar(user.id, base64)
+          setUser({ ...user, avatar: base64 })
+          setMessage({ type: 'success', text: 'Аватар обновлён' })
+        } catch (err: any) {
+          setMessage({ type: 'error', text: err.response?.data?.message || 'Ошибка при загрузке аватара' })
+        } finally {
+          setIsUploadingAvatar(false)
+        }
+      }
+      reader.onerror = () => {
+        setMessage({ type: 'error', text: 'Ошибка при чтении файла' })
+        setIsUploadingAvatar(false)
+      }
+      reader.readAsDataURL(file)
+    } catch (err: any) {
+      setMessage({ type: 'error', text: 'Ошибка при загрузке аватара' })
+      setIsUploadingAvatar(false)
+    }
+  }
+
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-6">
       <h2 className="text-xl font-bold text-gray-900 mb-6">Личные данные</h2>
       
+      {/* Avatar upload */}
+      <div className="flex flex-col items-center mb-6">
+        <div className="relative">
+          <div className="w-24 h-24 bg-primary-100 rounded-full flex items-center justify-center overflow-hidden">
+            {user.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-3xl font-bold text-primary-600">
+                {user.name.charAt(0).toUpperCase()}
+              </span>
+            )}
+          </div>
+          <label className="absolute bottom-0 right-0 w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-primary-700 transition-colors">
+            {isUploadingAvatar ? (
+              <Loader2 className="w-4 h-4 text-white animate-spin" />
+            ) : (
+              <Camera className="w-4 h-4 text-white" />
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarChange}
+              disabled={isUploadingAvatar}
+            />
+          </label>
+        </div>
+        <p className="text-sm text-gray-500 mt-2">Нажмите для загрузки фото (макс. 2 МБ)</p>
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Имя</label>
@@ -396,16 +480,48 @@ function SecuritySection({ userId }: { userId: string }) {
 }
 
 // Notifications Section
-function NotificationsSection() {
-  const [emailNotifications, setEmailNotifications] = useState(true)
-  const [pushNotifications, setPushNotifications] = useState(false)
-  const [marketingEmails, setMarketingEmails] = useState(false)
+function NotificationsSection({ user, setUser }: { user: any; setUser: (user: any) => void }) {
+  const [emailNotifications, setEmailNotifications] = useState(user.notifications?.email ?? true)
+  const [pushNotifications, setPushNotifications] = useState(user.notifications?.push ?? false)
+  const [marketingEmails, setMarketingEmails] = useState(user.notifications?.marketing ?? false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  const Toggle = ({ enabled, onChange }: { enabled: boolean; onChange: (v: boolean) => void }) => (
+  const handleToggle = async (type: 'email' | 'push' | 'marketing', value: boolean) => {
+    // Update local state immediately
+    if (type === 'email') setEmailNotifications(value)
+    if (type === 'push') setPushNotifications(value)
+    if (type === 'marketing') setMarketingEmails(value)
+
+    setIsSaving(true)
+    setMessage(null)
+
+    try {
+      const data = { [type]: value }
+      const response = await usersApi.updateNotifications(user.id, data)
+      
+      // Update user in store
+      setUser({ 
+        ...user, 
+        notifications: response.data.notifications 
+      })
+    } catch (err: any) {
+      // Revert local state on error
+      if (type === 'email') setEmailNotifications(!value)
+      if (type === 'push') setPushNotifications(!value)
+      if (type === 'marketing') setMarketingEmails(!value)
+      setMessage({ type: 'error', text: 'Ошибка при сохранении настроек' })
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const Toggle = ({ enabled, onChange, disabled }: { enabled: boolean; onChange: (v: boolean) => void; disabled?: boolean }) => (
     <button
       type="button"
-      onClick={() => onChange(!enabled)}
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${enabled ? 'bg-primary-600' : 'bg-gray-200'}`}
+      onClick={() => !disabled && onChange(!enabled)}
+      disabled={disabled}
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${enabled ? 'bg-primary-600' : 'bg-gray-200'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${enabled ? 'translate-x-6' : 'translate-x-1'}`} />
     </button>
@@ -421,7 +537,7 @@ function NotificationsSection() {
             <div className="font-medium text-gray-900">Email-уведомления</div>
             <div className="text-sm text-gray-500">Получать уведомления о важных событиях на email</div>
           </div>
-          <Toggle enabled={emailNotifications} onChange={setEmailNotifications} />
+          <Toggle enabled={emailNotifications} onChange={(v) => handleToggle('email', v)} disabled={isSaving} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -429,7 +545,7 @@ function NotificationsSection() {
             <div className="font-medium text-gray-900">Push-уведомления</div>
             <div className="text-sm text-gray-500">Получать уведомления в браузере</div>
           </div>
-          <Toggle enabled={pushNotifications} onChange={setPushNotifications} />
+          <Toggle enabled={pushNotifications} onChange={(v) => handleToggle('push', v)} disabled={isSaving} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -437,13 +553,21 @@ function NotificationsSection() {
             <div className="font-medium text-gray-900">Маркетинговые рассылки</div>
             <div className="text-sm text-gray-500">Получать новости и специальные предложения</div>
           </div>
-          <Toggle enabled={marketingEmails} onChange={setMarketingEmails} />
+          <Toggle enabled={marketingEmails} onChange={(v) => handleToggle('marketing', v)} disabled={isSaving} />
         </div>
       </div>
 
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <p className="text-sm text-blue-700">
-          Настройки уведомлений сохраняются автоматически.
+      {message && (
+        <div className={`mt-4 p-4 rounded-lg flex items-center gap-2 ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+          {message.type === 'success' ? <Check className="w-5 h-5" /> : <X className="w-5 h-5" />}
+          {message.text}
+        </div>
+      )}
+
+      <div className="mt-6 p-4 bg-amber-50 rounded-lg">
+        <p className="text-sm text-amber-700">
+          <strong>Примечание:</strong> Push-уведомления и маркетинговые рассылки пока находятся в разработке. 
+          Настройки сохраняются для будущего использования.
         </p>
       </div>
     </div>

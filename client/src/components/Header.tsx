@@ -1,5 +1,5 @@
-import { Link, useLocation } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { useState } from 'react'
 import { Menu, X, User, LogOut } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 
@@ -12,45 +12,13 @@ const navLinks = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
-  const location = useLocation()
   const { isAuthenticated, user, isImpersonating, stopImpersonation, originalUser } = useAuthStore()
-  
-  const isHomePage = location.pathname === '/'
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  // Close menu on scroll
-  useEffect(() => {
-    if (isMenuOpen && isScrolled) {
-      // Menu stays open but with white background
-    }
-  }, [isScrolled, isMenuOpen])
-
-  // On homepage: transparent header until scrolled, then white
-  // On other pages: always white
-  // When menu is open: always white
-  const headerBg = (isHomePage && !isScrolled && !isMenuOpen)
-    ? 'bg-transparent'
-    : 'bg-white/95 backdrop-blur-lg border-b border-gray-100'
-  
-  const textColor = (isHomePage && !isScrolled && !isMenuOpen)
-    ? 'text-white'
-    : 'text-gray-900'
-  
-  const linkColor = (isHomePage && !isScrolled && !isMenuOpen)
-    ? 'text-white/80 hover:text-white hover:bg-white/10'
-    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-  
-  const activeLinkColor = (isHomePage && !isScrolled && !isMenuOpen)
-    ? 'bg-white/20 text-white'
-    : 'bg-primary-50 text-primary-700'
+  // Always white header on all pages
+  const headerBg = 'bg-white/95 backdrop-blur-lg border-b border-gray-100'
+  const textColor = 'text-gray-900'
+  const linkColor = 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+  const activeLinkColor = 'bg-primary-50 text-primary-700'
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[100]">
@@ -106,11 +74,7 @@ export default function Header() {
             {isAuthenticated ? (
               <Link
                 to="/profile"
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                  (isHomePage && !isScrolled && !isMenuOpen)
-                    ? 'bg-white/20 hover:bg-white/30 text-white' 
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
-                }`}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors bg-gray-100 hover:bg-gray-200 text-gray-900"
               >
                 <User className="w-4 h-4" />
                 <span className="text-sm font-medium">{user?.name || 'Профиль'}</span>
@@ -119,19 +83,13 @@ export default function Header() {
               <>
                 <Link
                   to="/login"
-                  className={`px-4 py-2 text-sm font-medium transition-colors ${
-                    (isHomePage && !isScrolled && !isMenuOpen) ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                  className="px-4 py-2 text-sm font-medium transition-colors text-gray-600 hover:text-gray-900"
                 >
                   Войти
                 </Link>
                 <Link
                   to="/register"
-                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    (isHomePage && !isScrolled && !isMenuOpen)
-                      ? 'bg-white text-primary-700 hover:bg-primary-50' 
-                      : 'text-white bg-primary-600 hover:bg-primary-700'
-                  }`}
+                  className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-white bg-primary-600 hover:bg-primary-700"
                 >
                   Регистрация
                 </Link>
@@ -142,9 +100,7 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`md:hidden p-2 rounded-lg transition-colors ${
-              (isHomePage && !isScrolled && !isMenuOpen) ? 'hover:bg-white/10 text-white' : 'hover:bg-gray-100 text-gray-900'
-            }`}
+            className="md:hidden p-2 rounded-lg transition-colors hover:bg-gray-100 text-gray-900"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>

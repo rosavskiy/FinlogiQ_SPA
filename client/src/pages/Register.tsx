@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react'
 import { useTelegram } from '../context/TelegramContext'
 import { useAuthStore } from '../store/authStore'
+import { authApi } from '../services/api'
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -16,7 +17,7 @@ export default function Register() {
   const [error, setError] = useState('')
 
   const navigate = useNavigate()
-  const { isTelegram, user: tgUser, hapticFeedback } = useTelegram()
+  const { isTelegram, user: tgUser, webApp, hapticFeedback } = useTelegram()
   const { login } = useAuthStore()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,22 +37,22 @@ export default function Register() {
     setIsLoading(true)
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const response = await authApi.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      })
+      const { user, token } = response.data
 
-      // Mock registration and auto-login
-      login(
-        { id: '1', email: formData.email, name: formData.name, role: 'user' },
-        'mock-token'
-      )
+      login(user, token)
 
       if (isTelegram) {
         hapticFeedback('notification', 'success')
       }
 
       navigate('/profile')
-    } catch (err) {
-      setError('Ошибка при регистрации. Попробуйте позже.')
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Ошибка при регистрации. Попробуйте позже.')
       if (isTelegram) {
         hapticFeedback('notification', 'error')
       }
@@ -68,28 +69,20 @@ export default function Register() {
   }
 
   const handleTelegramAuth = async () => {
-    if (!isTelegram || !tgUser) return
+    if (!isTelegram || !webApp) return
 
     setIsLoading(true)
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 500))
+      const response = await authApi.telegramAuth(webApp.initData)
+      const { user, token } = response.data
 
-      login(
-        {
-          id: tgUser.id.toString(),
-          email: '',
-          name: `${tgUser.first_name} ${tgUser.last_name || ''}`.trim(),
-          role: 'user',
-          telegramId: tgUser.id,
-        },
-        'telegram-auth-token'
-      )
+      login(user, token)
 
       hapticFeedback('notification', 'success')
       navigate('/profile')
-    } catch (err) {
-      setError('Ошибка авторизации через Telegram')
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Ошибка авторизации через Telegram')
       hapticFeedback('notification', 'error')
     } finally {
       setIsLoading(false)

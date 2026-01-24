@@ -19,7 +19,7 @@ const statusLabels = {
   upcoming: { label: 'Планируется', class: 'bg-blue-100 text-blue-700' },
 }
 
-const categories = ['Облигации', 'Крипто', 'Аналитика', 'Консалтинг']
+const categories = ['Разработка ПО', 'Облигации', 'Крипто', 'Аналитика', 'Консалтинг']
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState<Project[]>([])
@@ -31,7 +31,7 @@ export default function AdminProjects() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    category: 'Облигации',
+    category: 'Разработка ПО',
     status: 'active' as 'active' | 'completed' | 'upcoming',
     isPublished: true,
   })
@@ -72,7 +72,7 @@ export default function AdminProjects() {
       setFormData({
         title: '',
         description: '',
-        category: 'Облигации',
+        category: 'Разработка ПО',
         status: 'active',
         isPublished: true,
       })

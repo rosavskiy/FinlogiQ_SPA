@@ -6,11 +6,27 @@ import {
   BarChart3, 
   Users, 
   ArrowRight,
-  CheckCircle 
+  CheckCircle,
+  Code2
 } from 'lucide-react'
 import { useTelegram } from '../context/TelegramContext'
 
 const services = [
+  {
+    id: 'software',
+    icon: Code2,
+    title: 'Разработка ПО',
+    subtitle: 'Веб и мобильные решения',
+    description: 'Полный цикл разработки программного обеспечения: от идеи до запуска и поддержки',
+    features: [
+      'Веб-приложения и SPA',
+      'Мобильные приложения',
+      'Telegram Mini Apps',
+      'API и интеграции',
+      'Техническая поддержка',
+    ],
+    color: 'from-indigo-500 to-indigo-600',
+  },
   {
     id: 'bonds',
     icon: TrendingUp,

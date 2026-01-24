@@ -7,6 +7,7 @@ export interface IUser extends Document {
   name: string
   role: 'user' | 'admin'
   telegramId?: number
+  telegramUsername?: string
   avatar?: string
   status: 'pending' | 'active' | 'blocked'
   notifications: {
@@ -49,6 +50,10 @@ const userSchema = new Schema<IUser>(
       type: Number,
       unique: true,
       sparse: true,
+    },
+    telegramUsername: {
+      type: String,
+      trim: true,
     },
     avatar: {
       type: String,

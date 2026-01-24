@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock } from 'lucide-react'
 import { useTelegram } from '../context/TelegramContext'
+import { contactApi } from '../services/api'
 
 export default function Contacts() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ export default function Contacts() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const { showBackButton, hideBackButton, isTelegram, webApp, hapticFeedback } = useTelegram()
 
@@ -24,22 +26,35 @@ export default function Contacts() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError(null)
 
-    if (isTelegram) {
-      hapticFeedback('notification', 'success')
+    try {
+      await contactApi.submit({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        message: formData.message,
+      })
+
+      if (isTelegram) {
+        hapticFeedback('notification', 'success')
+      }
+
+      setIsSubmitted(true)
+      
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setIsSubmitted(false)
+        setFormData({ name: '', email: '', phone: '', message: '' })
+      }, 3000)
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Ошибка при отправке сообщения')
+      if (isTelegram) {
+        hapticFeedback('notification', 'error')
+      }
+    } finally {
+      setIsSubmitting(false)
     }
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    setIsSubmitted(true)
-    setIsSubmitting(false)
-    
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false)
-      setFormData({ name: '', email: '', phone: '', message: '' })
-    }, 3000)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -168,6 +183,12 @@ export default function Contacts() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
+                      {error}
+                    </div>
+                  )}
+                  
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                       Имя *

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { Contact } from '../models/Contact'
 import { adminAuth, AuthRequest } from '../middleware/auth'
+import { sendTelegramNotification } from '../utils/telegram'
 
 const router = Router()
 
@@ -22,8 +23,16 @@ router.post('/', async (req: Request, res: Response) => {
     const contact = new Contact({ name, email, phone, message })
     await contact.save()
 
-    // Here you could also send email notification to admin
-    // await sendEmailNotification(contact)
+    // Send Telegram notification to admin
+    const notificationMessage = `📩 <b>Новая заявка!</b>\n\n` +
+      `👤 <b>Имя:</b> ${name}\n` +
+      `📧 <b>Email:</b> ${email}\n` +
+      (phone ? `📱 <b>Телефон:</b> ${phone}\n` : '') +
+      `💬 <b>Сообщение:</b>\n${message}`
+    
+    sendTelegramNotification(notificationMessage).catch(err => {
+      console.error('Failed to send Telegram notification:', err)
+    })
 
     res.status(201).json({ message: 'Сообщение успешно отправлено' })
   } catch (error: any) {

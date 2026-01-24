@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { User } from '../models/User'
 import { generateToken, AuthRequest, auth } from '../middleware/auth'
-import { validateTelegramWebAppData } from '../utils/telegram'
+import { validateTelegramWebAppData, sendTelegramNotification } from '../utils/telegram'
 
 const router = Router()
 
@@ -22,6 +22,17 @@ router.post('/register', async (req: Request, res: Response) => {
     // New users start with pending status - needs admin approval
     const user = new User({ email, password, name, status: 'pending' })
     await user.save()
+
+    // Send Telegram notification to admin
+    const notificationMessage = `👤 <b>Новый пользователь!</b>\n\n` +
+      `📝 <b>Имя:</b> ${name}\n` +
+      `📧 <b>Email:</b> ${email}\n` +
+      `📅 <b>Дата:</b> ${new Date().toLocaleString('ru-RU')}\n\n` +
+      `⏳ Статус: Ожидает подтверждения`
+    
+    sendTelegramNotification(notificationMessage).catch(err => {
+      console.error('Failed to send Telegram notification:', err)
+    })
 
     const token = generateToken(user._id.toString())
 
@@ -113,20 +124,43 @@ router.post('/telegram', async (req: Request, res: Response) => {
 
     // Find or create user
     let user = await User.findOne({ telegramId: tgUser.id })
+    let isNewUser = false
     
     if (!user) {
+      isNewUser = true
       // New Telegram users start with pending status
       user = new User({
         telegramId: tgUser.id,
+        telegramUsername: tgUser.username,
         name: `${tgUser.first_name} ${tgUser.last_name || ''}`.trim(),
         avatar: tgUser.photo_url || undefined,
         status: 'pending',
       })
       await user.save()
+      
+      // Send Telegram notification to admin about new user
+      const notificationMessage = `👤 <b>Новый пользователь (Telegram)!</b>\n\n` +
+        `📝 <b>Имя:</b> ${user.name}\n` +
+        `🆔 <b>Telegram ID:</b> ${tgUser.id}\n` +
+        (tgUser.username ? `📱 <b>Username:</b> @${tgUser.username}\n` : '') +
+        `📅 <b>Дата:</b> ${new Date().toLocaleString('ru-RU')}\n\n` +
+        `⏳ Статус: Ожидает подтверждения`
+      
+      sendTelegramNotification(notificationMessage).catch(err => {
+        console.error('Failed to send Telegram notification:', err)
+      })
     } else {
-      // Update avatar if it changed in Telegram
+      // Update avatar and username if changed in Telegram
+      let needsSave = false
       if (tgUser.photo_url && user.avatar !== tgUser.photo_url) {
         user.avatar = tgUser.photo_url
+        needsSave = true
+      }
+      if (tgUser.username && user.telegramUsername !== tgUser.username) {
+        user.telegramUsername = tgUser.username
+        needsSave = true
+      }
+      if (needsSave) {
         await user.save()
       }
     }

@@ -8,6 +8,7 @@ interface User {
   role: 'user' | 'admin'
   avatar?: string
   telegramId?: number
+  telegramUsername?: string
   status?: 'pending' | 'active' | 'blocked'
 }
 

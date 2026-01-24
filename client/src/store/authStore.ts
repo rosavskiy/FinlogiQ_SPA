@@ -14,13 +14,12 @@ interface User {
 interface AuthState {
   user: User | null
   token: string | null
+  isAuthenticated: boolean
   isLoading: boolean
   // Impersonation support
   originalUser: User | null
   originalToken: string | null
   isImpersonating: boolean
-  // Computed
-  isAuthenticated: boolean
   setUser: (user: User | null) => void
   setToken: (token: string | null) => void
   login: (user: User, token: string) => void
@@ -33,55 +32,49 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       token: null,
+      isAuthenticated: false,
       isLoading: false,
       originalUser: null,
       originalToken: null,
       isImpersonating: false,
-      // Computed property - true if we have both user and token
-      get isAuthenticated() {
-        const state = get()
-        return !!(state.user && state.token)
-      },
-      setUser: (user) => set({ user }),
+      setUser: (user) => set({ user, isAuthenticated: !!user }),
       setToken: (token) => set({ token }),
-      login: (user, token) => set({ user, token }),
+      login: (user, token) => set({ user, token, isAuthenticated: true }),
       logout: () => set({ 
         user: null, 
         token: null, 
+        isAuthenticated: false,
         originalUser: null,
         originalToken: null,
         isImpersonating: false,
       }),
       setLoading: (isLoading) => set({ isLoading }),
-      startImpersonation: (user, token) => {
-        const currentState = get()
-        set({
-          originalUser: currentState.user,
-          originalToken: currentState.token,
-          user,
-          token,
-          isImpersonating: true,
-        })
-      },
-      stopImpersonation: () => {
-        const currentState = get()
-        set({
-          user: currentState.originalUser,
-          token: currentState.originalToken,
-          originalUser: null,
-          originalToken: null,
-          isImpersonating: false,
-        })
-      },
+      startImpersonation: (user, token) => set((state) => ({
+        originalUser: state.user,
+        originalToken: state.token,
+        user,
+        token,
+        isAuthenticated: true,
+        isImpersonating: true,
+      })),
+      stopImpersonation: () => set((state) => ({
+        user: state.originalUser,
+        token: state.originalToken,
+        isAuthenticated: !!(state.originalUser && state.originalToken),
+        originalUser: null,
+        originalToken: null,
+        isImpersonating: false,
+      })),
     }),
     {
       name: 'finlogiq-auth',
       partialize: (state) => ({ 
         token: state.token, 
         user: state.user,
+        isAuthenticated: state.isAuthenticated,
         originalUser: state.originalUser,
         originalToken: state.originalToken,
         isImpersonating: state.isImpersonating,

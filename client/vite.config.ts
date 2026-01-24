@@ -6,8 +6,11 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
+      devOptions: {
+        enabled: false
+      },
       manifest: {
         name: 'FinlogiQ - Финансовые решения',
         short_name: 'FinlogiQ',

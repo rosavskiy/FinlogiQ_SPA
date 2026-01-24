@@ -1,30 +1,18 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Briefcase, TrendingUp, Shield, Zap } from 'lucide-react'
+import { ArrowRight, Code2, Users } from 'lucide-react'
 import { useTelegram } from '../context/TelegramContext'
 
 const features = [
   {
-    icon: Briefcase,
-    title: 'Выпуск облигаций',
-    description: 'Привлечение капитала от 100 млн ₽ без залога',
-    color: 'bg-blue-500',
+    icon: Code2,
+    title: 'Разработка ПО',
+    description: 'Веб-приложения, мобильные решения и Telegram Mini Apps',
+    color: 'bg-indigo-500',
   },
   {
-    icon: TrendingUp,
-    title: 'Крипто-карта',
-    description: 'Принимайте криптоплатежи с полным комплаенсом',
-    color: 'bg-purple-500',
-  },
-  {
-    icon: Shield,
-    title: 'Анализ деятельности',
-    description: 'Кредитный профиль и стресс-тесты',
-    color: 'bg-green-500',
-  },
-  {
-    icon: Zap,
+    icon: Users,
     title: 'Консалтинг',
-    description: 'Финансовые решения под ваши задачи',
+    description: 'IT-экспертиза и оптимизация бизнес-процессов',
     color: 'bg-orange-500',
   },
 ]
@@ -48,7 +36,7 @@ export default function Home() {
               Финансовая инфраструктура для роста вашего бизнеса
             </h1>
             <p className="text-xl text-primary-100 mb-8 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              Облигации, крипто-карты, аналитика и консалтинг — всё в одном месте
+              Разработка программного обеспечения и IT-консалтинг
             </p>
             <div className="flex flex-wrap gap-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
               <Link
@@ -85,7 +73,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {features.map((feature, index) => {
               const Icon = feature.icon
               return (

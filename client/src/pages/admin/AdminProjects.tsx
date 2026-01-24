@@ -19,7 +19,7 @@ const statusLabels = {
   upcoming: { label: 'Планируется', class: 'bg-blue-100 text-blue-700' },
 }
 
-const categories = ['Разработка ПО', 'Облигации', 'Крипто', 'Аналитика', 'Консалтинг']
+const categories = ['Разработка ПО', 'Консалтинг']
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState<Project[]>([])

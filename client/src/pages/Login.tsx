@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react'
 import { useTelegram } from '../context/TelegramContext'
 import { useAuthStore } from '../store/authStore'
+import { authApi } from '../services/api'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -21,22 +22,23 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const response = await authApi.login({ email, password })
+      const { user, token } = response.data
 
-      // Mock login
-      login(
-        { id: '1', email, name: 'Пользователь', role: 'user' },
-        'mock-token'
-      )
+      login(user, token)
 
       if (isTelegram) {
         hapticFeedback('notification', 'success')
       }
 
-      navigate('/profile')
-    } catch (err) {
-      setError('Неверный email или пароль')
+      // Redirect to admin if user is admin
+      if (user.role === 'admin') {
+        navigate('/admin')
+      } else {
+        navigate('/profile')
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Неверный email или пароль')
       if (isTelegram) {
         hapticFeedback('notification', 'error')
       }
@@ -46,29 +48,25 @@ export default function Login() {
   }
 
   const handleTelegramAuth = async () => {
-    if (!isTelegram || !tgUser || !webApp) return
+    if (!isTelegram || !webApp) return
 
     setIsLoading(true)
 
     try {
-      // Here you would send initData to your server for verification
-      await new Promise(resolve => setTimeout(resolve, 500))
+      const response = await authApi.telegramAuth(webApp.initData)
+      const { user, token } = response.data
 
-      login(
-        {
-          id: tgUser.id.toString(),
-          email: '',
-          name: `${tgUser.first_name} ${tgUser.last_name || ''}`.trim(),
-          role: 'user',
-          telegramId: tgUser.id,
-        },
-        'telegram-auth-token'
-      )
+      login(user, token)
 
       hapticFeedback('notification', 'success')
-      navigate('/profile')
-    } catch (err) {
-      setError('Ошибка авторизации через Telegram')
+      
+      if (user.role === 'admin') {
+        navigate('/admin')
+      } else {
+        navigate('/profile')
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Ошибка авторизации через Telegram')
       hapticFeedback('notification', 'error')
     } finally {
       setIsLoading(false)

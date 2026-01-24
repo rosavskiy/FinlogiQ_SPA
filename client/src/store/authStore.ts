@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'finlogiq-auth',
-      partialize: (state) => ({ token: state.token }),
+      partialize: (state) => ({ token: state.token, user: state.user }),
     }
   )
 )

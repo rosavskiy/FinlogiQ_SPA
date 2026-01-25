@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { 
   User, Mail, Settings, LogOut, Shield, Bell, CreditCard, FileText, 
-  ExternalLink, ArrowLeft, Save, Eye, EyeOff, Lock, Check, X,
+  ExternalLink, ArrowLeft, Save, Check, X,
   Moon, Sun, Globe, Loader2, Camera
 } from 'lucide-react'
 import { useTelegram } from '../context/TelegramContext'
 import { useAuthStore } from '../store/authStore'
 import { usersApi } from '../services/api'
 
-type Section = 'menu' | 'personal' | 'security' | 'notifications' | 'subscription' | 'documents' | 'settings'
+type Section = 'menu' | 'personal' | 'notifications' | 'subscription' | 'documents' | 'settings'
 
 export default function Profile() {
   const navigate = useNavigate()
@@ -52,7 +52,6 @@ export default function Profile() {
 
   const menuItems = [
     { id: 'personal' as Section, icon: User, label: 'Личные данные', description: 'Имя, контакты, аватар' },
-    { id: 'security' as Section, icon: Shield, label: 'Безопасность', description: 'Пароль, двухфакторная аутентификация' },
     { id: 'notifications' as Section, icon: Bell, label: 'Уведомления', description: 'Email и push-уведомления' },
     { id: 'subscription' as Section, icon: CreditCard, label: 'Подписка', description: 'Текущий план и платежи' },
     { id: 'documents' as Section, icon: FileText, label: 'Мои документы', description: 'История загрузок и отчёты' },
@@ -119,7 +118,6 @@ export default function Profile() {
             />
           )}
           {activeSection === 'personal' && <PersonalSection user={user} setUser={setUser} />}
-          {activeSection === 'security' && <SecuritySection userId={user.id} />}
           {activeSection === 'notifications' && <NotificationsSection user={user} setUser={setUser} />}
           {activeSection === 'subscription' && <SubscriptionSection />}
           {activeSection === 'documents' && <DocumentsSection />}
@@ -379,128 +377,6 @@ function PersonalSection({ user, setUser }: { user: any; setUser: (user: any) =>
           Сохранить изменения
         </button>
       </form>
-    </div>
-  )
-}
-
-// Security Section
-function SecuritySection({ userId }: { userId: string }) {
-  const [currentPassword, setCurrentPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [showPasswords, setShowPasswords] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (newPassword !== confirmPassword) {
-      setMessage({ type: 'error', text: 'Пароли не совпадают' })
-      return
-    }
-
-    if (newPassword.length < 6) {
-      setMessage({ type: 'error', text: 'Пароль должен быть не менее 6 символов' })
-      return
-    }
-
-    setIsLoading(true)
-    setMessage(null)
-
-    try {
-      await usersApi.changePassword(userId, { currentPassword, newPassword })
-      setMessage({ type: 'success', text: 'Пароль успешно изменён' })
-      setCurrentPassword('')
-      setNewPassword('')
-      setConfirmPassword('')
-    } catch (err: any) {
-      setMessage({ type: 'error', text: err.response?.data?.message || 'Ошибка при смене пароля' })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  return (
-    <div className="bg-white rounded-xl border border-gray-100 p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Безопасность</h2>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Текущий пароль</label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type={showPasswords ? 'text' : 'password'}
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPasswords(!showPasswords)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            >
-              {showPasswords ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Новый пароль</label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type={showPasswords ? 'text' : 'password'}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
-              required
-              minLength={6}
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Подтвердите пароль</label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type={showPasswords ? 'text' : 'password'}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
-              required
-            />
-          </div>
-        </div>
-
-        {message && (
-          <div className={`p-4 rounded-lg flex items-center gap-2 ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-            {message.type === 'success' ? <Check className="w-5 h-5" /> : <X className="w-5 h-5" />}
-            {message.text}
-          </div>
-        )}
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors font-medium"
-        >
-          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Shield className="w-5 h-5" />}
-          Изменить пароль
-        </button>
-      </form>
-
-      <div className="mt-8 pt-6 border-t border-gray-100">
-        <h3 className="font-semibold text-gray-900 mb-4">Двухфакторная аутентификация</h3>
-        <div className="p-4 bg-gray-50 rounded-lg">
-          <p className="text-gray-600 text-sm">
-            Двухфакторная аутентификация пока недоступна. Мы работаем над этой функцией.
-          </p>
-        </div>
-      </div>
     </div>
   )
 }

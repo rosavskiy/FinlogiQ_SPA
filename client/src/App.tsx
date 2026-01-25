@@ -26,9 +26,11 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Проверяем, показывали ли уже загрузку в этой сессии
+    // Проверяем настройку анимации и показывали ли уже загрузку в этой сессии
+    const animationEnabled = localStorage.getItem('showLoadingAnimation') !== 'false'
     const hasSeenLoading = sessionStorage.getItem('hasSeenLoading')
-    if (hasSeenLoading) {
+    
+    if (!animationEnabled || hasSeenLoading) {
       setIsLoading(false)
     }
   }, [])

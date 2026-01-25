@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Save, Globe, Bell, Shield, Database } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Save, Globe, Bell, Shield, Database, Film } from 'lucide-react'
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState({
@@ -10,10 +10,20 @@ export default function AdminSettings() {
     enableRegistration: true,
     enableTelegramAuth: true,
     maintenanceMode: false,
+    showLoadingAnimation: true,
   })
 
+  useEffect(() => {
+    // Загружаем настройку анимации из localStorage
+    const showAnimation = localStorage.getItem('showLoadingAnimation')
+    if (showAnimation !== null) {
+      setSettings(prev => ({ ...prev, showLoadingAnimation: showAnimation === 'true' }))
+    }
+  }, [])
+
   const handleSave = () => {
-    // TODO: Save to API
+    // Сохраняем настройку анимации в localStorage
+    localStorage.setItem('showLoadingAnimation', settings.showLoadingAnimation.toString())
     alert('Настройки сохранены!')
   }
 
@@ -141,6 +151,31 @@ export default function AdminSettings() {
                 className={`relative w-12 h-6 rounded-full transition-colors ${settings.maintenanceMode ? 'bg-red-600' : 'bg-gray-300'}`}
               >
                 <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${settings.maintenanceMode ? 'left-7' : 'left-1'}`} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* UI settings */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+              <Film className="w-5 h-5 text-indigo-600" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900">Интерфейс</h3>
+          </div>
+          
+          <div className="space-y-4">
+            <div className="flex items-center justify-between py-2">
+              <div>
+                <p className="font-medium text-gray-900">Стартовая анимация</p>
+                <p className="text-sm text-gray-500">Показывать анимацию логотипа при загрузке</p>
+              </div>
+              <button
+                onClick={() => setSettings({ ...settings, showLoadingAnimation: !settings.showLoadingAnimation })}
+                className={`relative w-12 h-6 rounded-full transition-colors ${settings.showLoadingAnimation ? 'bg-primary-600' : 'bg-gray-300'}`}
+              >
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${settings.showLoadingAnimation ? 'left-7' : 'left-1'}`} />
               </button>
             </div>
           </div>

@@ -25,7 +25,7 @@ function TelegramLoginWidget({ botUsername, onAuth }: { botUsername: string; onA
     script.src = 'https://telegram.org/js/telegram-widget.js?22'
     script.setAttribute('data-telegram-login', botUsername)
     script.setAttribute('data-size', 'large')
-    script.setAttribute('data-radius', '8')
+    script.setAttribute('data-radius', '10')
     script.setAttribute('data-onauth', 'onTelegramAuth(user)')
     script.setAttribute('data-request-access', 'write')
     script.async = true
@@ -150,9 +150,17 @@ export default function Login() {
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Вход через Telegram
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 mb-4">
                 Нажмите на кнопку ниже для авторизации
               </p>
+              {error && error.includes('Bot domain invalid') && (
+                <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
+                  <p className="font-medium mb-1">⚠️ Требуется настройка домена</p>
+                  <p className="text-xs">
+                    Откройте @BotFather → /mybots → выберите бота → Bot Settings → Domain → добавьте {window.location.hostname}
+                  </p>
+                </div>
+              )}
               <TelegramLoginWidget 
                 botUsername={import.meta.env.VITE_TELEGRAM_BOT_USERNAME || 'finlogiq_bot'}
                 onAuth={handleTelegramWidgetAuth}

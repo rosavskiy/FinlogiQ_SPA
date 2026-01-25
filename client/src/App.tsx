@@ -7,7 +7,6 @@ import Services from './pages/Services'
 import Interesting from './pages/Interesting'
 import Contacts from './pages/Contacts'
 import Login from './pages/Login'
-import Register from './pages/Register'
 import Profile from './pages/Profile'
 import NotFound from './pages/NotFound'
 import {
@@ -34,7 +33,6 @@ function App() {
           <Route path="interesting" element={<Interesting />} />
           <Route path="contacts" element={<Contacts />} />
           <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
           <Route path="profile" element={<Profile />} />
         </Route>
 

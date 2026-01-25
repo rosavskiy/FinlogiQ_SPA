@@ -80,20 +80,12 @@ export default function Header() {
                 <span className="text-sm font-medium">{user?.name || 'Профиль'}</span>
               </Link>
             ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="px-4 py-2 text-sm font-medium transition-colors text-gray-600 hover:text-gray-900"
-                >
-                  Войти
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-white bg-primary-600 hover:bg-primary-700"
-                >
-                  Регистрация
-                </Link>
-              </>
+              <Link
+                to="/login"
+                className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-white bg-primary-600 hover:bg-primary-700"
+              >
+                Войти
+              </Link>
             )}
           </div>
 
@@ -134,22 +126,13 @@ export default function Header() {
                   Профиль
                 </Link>
               ) : (
-                <>
-                  <Link
-                    to="/login"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="px-4 py-3 rounded-lg text-sm font-medium transition-colors text-gray-600 hover:bg-gray-50"
-                  >
-                    Войти
-                  </Link>
-                  <Link
-                    to="/register"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="px-4 py-3 rounded-lg text-sm font-medium text-center text-white bg-primary-600 hover:bg-primary-700"
-                  >
-                    Регистрация
-                  </Link>
-                </>
+                <Link
+                  to="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="px-4 py-3 rounded-lg text-sm font-medium text-center text-white bg-primary-600 hover:bg-primary-700"
+                >
+                  Войти
+                </Link>
               )}
             </nav>
           </div>

@@ -4,12 +4,12 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
 
   useEffect(() => {
-    // Минимальное время показа - 1 секунда
+    // Минимальное время показа - 3 секунды
     const minDisplayTime = setTimeout(() => {
       if (isVideoLoaded) {
         onComplete()
       }
-    }, 1000)
+    }, 3000)
 
     return () => clearTimeout(minDisplayTime)
   }, [isVideoLoaded, onComplete])
@@ -20,8 +20,17 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   }
 
   const handleVideoError = () => {
-    // Если видео не загрузилось, показываем минимум 1 секунду и скрываем
-    setTimeout(onComplete, 1000)
+    // Если видео не загрузилось, показываем минимум 3 секунды и скрываем
+    setTimeout(onComplete, 3000)
+  }
+
+  const handleVideoLoad = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    // Ускоряем видео, чтобы оно проходило за 3 секунды
+    const video = e.currentTarget
+    const videoDuration = video.duration
+    if (videoDuration > 3) {
+      video.playbackRate = videoDuration / 3
+    }
   }
 
   return (
@@ -33,6 +42,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
           playsInline
           onEnded={handleVideoEnd}
           onError={handleVideoError}
+          onLoadedMetadata={handleVideoLoad}
           className="w-full h-auto"
         >
           <source src="/animation.mp4" type="video/mp4" />

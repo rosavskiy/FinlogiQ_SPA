@@ -1,5 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { useTelegram } from './context/TelegramContext'
+import LoadingScreen from './components/LoadingScreen'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Projects from './pages/Projects'
@@ -21,6 +23,24 @@ import {
 
 function App() {
   const { isTelegram } = useTelegram()
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Проверяем, показывали ли уже загрузку в этой сессии
+    const hasSeenLoading = sessionStorage.getItem('hasSeenLoading')
+    if (hasSeenLoading) {
+      setIsLoading(false)
+    }
+  }, [])
+
+  const handleLoadingComplete = () => {
+    sessionStorage.setItem('hasSeenLoading', 'true')
+    setIsLoading(false)
+  }
+
+  if (isLoading) {
+    return <LoadingScreen onComplete={handleLoadingComplete} />
+  }
 
   return (
     <div className={isTelegram ? 'twa-mode' : ''}>

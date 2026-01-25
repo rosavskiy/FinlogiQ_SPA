@@ -45,6 +45,9 @@ export const authApi = {
   telegramAuth: (initData: string) =>
     api.post('/auth/telegram', { initData }),
   
+  telegramWidgetAuth: (data: any) =>
+    api.post('/auth/telegram-widget', data),
+  
   me: () => api.get('/auth/me'),
   
   logout: () => api.post('/auth/logout'),

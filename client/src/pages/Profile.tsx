@@ -6,6 +6,7 @@ import {
   Moon, Sun, Globe, Loader2, Camera
 } from 'lucide-react'
 import { useTelegram } from '../context/TelegramContext'
+import { useTheme } from '../context/ThemeContext'
 import { useAuthStore } from '../store/authStore'
 import { usersApi } from '../services/api'
 
@@ -59,7 +60,7 @@ export default function Profile() {
   ]
 
   return (
-    <div className="pt-16 pb-20 md:pb-0 min-h-screen bg-gray-50">
+    <div className="pt-16 pb-20 md:pb-0 min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero - compact when in subsection */}
       <section className={`bg-gradient-to-br from-primary-600 to-primary-800 ${activeSection === 'menu' ? 'py-12 md:py-16' : 'py-6 md:py-8'} transition-all`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -570,16 +571,16 @@ function DocumentsSection() {
 
 // Settings Section
 function SettingsSection() {
-  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('light')
+  const { theme, setTheme } = useTheme()
   const [language, setLanguage] = useState('ru')
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Настройки</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Настройки</h2>
       
       <div className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">Тема оформления</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Тема оформления</label>
           <div className="grid grid-cols-3 gap-3">
             {[
               { id: 'light', icon: Sun, label: 'Светлая' },
@@ -588,15 +589,15 @@ function SettingsSection() {
             ].map((option) => (
               <button
                 key={option.id}
-                onClick={() => setTheme(option.id as any)}
+                onClick={() => setTheme(option.id as 'light' | 'dark' | 'system')}
                 className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors ${
                   theme === option.id 
-                    ? 'border-primary-600 bg-primary-50' 
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/30' 
+                    : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
                 }`}
               >
-                <option.icon className={`w-5 h-5 ${theme === option.id ? 'text-primary-600' : 'text-gray-500'}`} />
-                <span className={`text-sm font-medium ${theme === option.id ? 'text-primary-600' : 'text-gray-700'}`}>
+                <option.icon className={`w-5 h-5 ${theme === option.id ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-gray-400'}`} />
+                <span className={`text-sm font-medium ${theme === option.id ? 'text-primary-600 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'}`}>
                   {option.label}
                 </span>
               </button>
@@ -605,13 +606,13 @@ function SettingsSection() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">Язык интерфейса</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Язык интерфейса</label>
           <div className="relative">
             <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none appearance-none bg-white"
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none appearance-none bg-white dark:bg-gray-700 dark:text-white"
             >
               <option value="ru">Русский</option>
               <option value="en">English</option>
@@ -619,9 +620,9 @@ function SettingsSection() {
           </div>
         </div>
 
-        <div className="pt-4 border-t border-gray-100">
-          <h3 className="font-semibold text-gray-900 mb-4">Опасная зона</h3>
-          <button className="px-4 py-2 text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors text-sm font-medium">
+        <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Опасная зона</h3>
+          <button className="px-4 py-2 text-red-600 border border-red-200 dark:border-red-800 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors text-sm font-medium">
             Удалить аккаунт
           </button>
         </div>

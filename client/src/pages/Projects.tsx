@@ -65,26 +65,26 @@ export default function Projects() {
   return (
     <div className="pt-16 pb-20 md:pb-0">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-gray-50 to-white py-12 md:py-20">
+      <section className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Наши проекты
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
             Реализованные кейсы и текущие проекты в области финансового консалтинга
           </p>
         </div>
       </section>
 
       {/* Projects Grid */}
-      <section className="py-12 md:py-16">
+      <section className="py-12 md:py-16 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
             </div>
           ) : projects.length === 0 ? (
-            <div className="text-center py-20 text-gray-500">
+            <div className="text-center py-20 text-gray-500 dark:text-gray-400">
               Проекты пока не добавлены
             </div>
           ) : (
@@ -92,7 +92,7 @@ export default function Projects() {
               {projects.map((project, index) => (
                 <article
                   key={project._id}
-                  className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 animate-slide-up"
+                  className="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 animate-slide-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   {/* Image */}
@@ -121,13 +121,13 @@ export default function Projects() {
                   </div>
 
                   <div className="p-6">
-                    <div className="text-sm text-gray-500 mb-2">
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                       {new Date(project.createdAt).getFullYear()}
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                       {project.title}
                     </h3>
-                    <div className="text-gray-600 mb-4 prose prose-sm max-w-none">
+                    <div className="text-gray-600 dark:text-gray-300 mb-4 prose prose-sm dark:prose-invert max-w-none">
                       {project.description.length > MAX_DESCRIPTION_LENGTH && !expandedProjects.has(project._id) ? (
                         <>
                           <ReactMarkdown>

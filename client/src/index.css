@@ -12,6 +12,16 @@
   --tg-theme-secondary-bg-color: #f5f5f5;
 }
 
+.dark {
+  --tg-theme-bg-color: #111827;
+  --tg-theme-text-color: #f9fafb;
+  --tg-theme-hint-color: #9ca3af;
+  --tg-theme-link-color: #60a5fa;
+  --tg-theme-button-color: #3b82f6;
+  --tg-theme-button-text-color: #ffffff;
+  --tg-theme-secondary-bg-color: #1f2937;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -30,6 +40,14 @@ body {
   color: var(--tg-theme-text-color, #000000);
   min-height: 100vh;
   min-height: 100dvh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode body styles */
+.dark body,
+html.dark body {
+  background-color: #111827;
+  color: #f9fafb;
 }
 
 /* Telegram Web App specific styles */
@@ -63,6 +81,14 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
 }
 
 /* Animations */

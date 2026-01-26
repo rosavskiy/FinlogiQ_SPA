@@ -24,7 +24,7 @@ export default function MobileNav() {
 
   // Show on mobile web and Telegram
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 safe-area-inset z-50">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 safe-area-inset z-50">
       <div className="flex items-center justify-around h-16">
         {navItems.map((item) => {
           const Icon = item.icon
@@ -41,8 +41,8 @@ export default function MobileNav() {
               onClick={handleNavClick}
               className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
                 isActive 
-                  ? 'text-primary-600' 
-                  : 'text-gray-400 hover:text-gray-600'
+                  ? 'text-primary-600 dark:text-primary-400' 
+                  : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
               }`}
             >
               <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : ''}`} />

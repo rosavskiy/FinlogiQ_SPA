@@ -54,19 +54,19 @@ export default function Services() {
   return (
     <div className="pt-16 pb-20 md:pb-0">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-gray-50 to-white py-12 md:py-20">
+      <section className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Наши услуги
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
             Комплексные финансовые решения для развития вашего бизнеса
           </p>
         </div>
       </section>
 
       {/* Services */}
-      <section className="py-12 md:py-16">
+      <section className="py-12 md:py-16 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-8">
             {services.map((service, index) => {
@@ -74,7 +74,7 @@ export default function Services() {
               return (
                 <div
                   key={service.id}
-                  className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow animate-slide-up"
+                  className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow animate-slide-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="p-6 md:p-8">
@@ -90,10 +90,10 @@ export default function Services() {
                       <div className="flex-1">
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
                           <div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                               {service.title}
                             </h3>
-                            <p className="text-primary-600 font-medium">
+                            <p className="text-primary-600 dark:text-primary-400 font-medium">
                               {service.subtitle}
                             </p>
                           </div>
@@ -106,7 +106,7 @@ export default function Services() {
                           </Link>
                         </div>
 
-                        <p className="text-gray-600 mb-6">
+                        <p className="text-gray-600 dark:text-gray-400 mb-6">
                           {service.description}
                         </p>
 
@@ -115,7 +115,7 @@ export default function Services() {
                           {service.features.map((feature) => (
                             <div key={feature} className="flex items-center gap-2">
                               <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                              <span className="text-gray-700 text-sm">{feature}</span>
+                              <span className="text-gray-700 dark:text-gray-300 text-sm">{feature}</span>
                             </div>
                           ))}
                         </div>
@@ -130,12 +130,12 @@ export default function Services() {
       </section>
 
       {/* CTA */}
-      <section className="py-12 md:py-16 bg-gray-50">
+      <section className="py-12 md:py-16 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Не нашли подходящее решение?
           </h2>
-          <p className="text-gray-600 mb-8 max-w-xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-xl mx-auto">
             Мы готовы разработать индивидуальное предложение под ваши задачи
           </p>
           <Link

@@ -14,11 +14,11 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { isAuthenticated, user, isImpersonating, stopImpersonation, originalUser } = useAuthStore()
 
-  // Always white header on all pages
-  const headerBg = 'bg-white/95 backdrop-blur-lg border-b border-gray-100'
-  const textColor = 'text-gray-900'
-  const linkColor = 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-  const activeLinkColor = 'bg-primary-50 text-primary-700'
+  // Header with dark mode support
+  const headerBg = 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-100 dark:border-gray-800'
+  const textColor = 'text-gray-900 dark:text-white'
+  const linkColor = 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
+  const activeLinkColor = 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[100]">
@@ -74,7 +74,7 @@ export default function Header() {
             {isAuthenticated ? (
               <Link
                 to="/profile"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors bg-gray-100 hover:bg-gray-200 text-gray-900"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <User className="w-4 h-4" />
                 <span className="text-sm font-medium">{user?.name || 'Профиль'}</span>
@@ -92,15 +92,15 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-lg transition-colors hover:bg-gray-100 text-gray-900"
+            className="md:hidden p-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900 dark:text-white"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
-        {/* Mobile Menu - Always white background */}
+        {/* Mobile Menu with dark mode support */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 animate-slide-down border-t border-gray-100 bg-white rounded-b-xl shadow-lg">
+          <div className="md:hidden py-4 animate-slide-down border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-b-xl shadow-lg">
             <nav className="flex flex-col gap-1">
               {navLinks.map((link) => (
                 <Link
@@ -109,19 +109,19 @@ export default function Header() {
                   onClick={() => setIsMenuOpen(false)}
                   className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                     location.pathname === link.path
-                      ? 'bg-primary-50 text-primary-700'
-                      : 'text-gray-600 hover:bg-gray-50'
+                      ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="h-px my-2 bg-gray-100" />
+              <div className="h-px my-2 bg-gray-100 dark:bg-gray-800" />
               {isAuthenticated ? (
                 <Link
                   to="/profile"
                   onClick={() => setIsMenuOpen(false)}
-                  className="px-4 py-3 rounded-lg text-sm font-medium transition-colors text-gray-600 hover:bg-gray-50"
+                  className="px-4 py-3 rounded-lg text-sm font-medium transition-colors text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                 >
                   Профиль
                 </Link>

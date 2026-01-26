@@ -128,7 +128,7 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
       tg.ready()
       tg.expand()
       
-      // Apply theme colors
+      // Apply theme colors from Telegram
       document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#ffffff')
       document.documentElement.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#000000')
       document.documentElement.style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color || '#999999')
@@ -136,6 +136,15 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
       document.documentElement.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#3b82f6')
       document.documentElement.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff')
       document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color || '#f5f5f5')
+
+      // Синхронизируем тему с темой Telegram
+      if (tg.colorScheme === 'dark') {
+        document.documentElement.classList.add('dark')
+        // Сохраняем в localStorage, что используется тема Telegram
+        localStorage.setItem('finlogiq-theme', 'system')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
     }
   }, [])
 

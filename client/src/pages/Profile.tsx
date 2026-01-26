@@ -118,11 +118,11 @@ export default function Profile() {
               isAdmin={user.role === 'admin'}
             />
           )}
-          {activeSection === 'personal' && <PersonalSection user={user} setUser={setUser} />}
-          {activeSection === 'notifications' && <NotificationsSection user={user} setUser={setUser} />}
-          {activeSection === 'subscription' && <SubscriptionSection />}
-          {activeSection === 'documents' && <DocumentsSection />}
-          {activeSection === 'settings' && <SettingsSection />}
+          {activeSection === 'personal' && <PersonalSection user={user} setUser={setUser} onBack={handleBack} />}
+          {activeSection === 'notifications' && <NotificationsSection user={user} setUser={setUser} onBack={handleBack} />}
+          {activeSection === 'subscription' && <SubscriptionSection onBack={handleBack} />}
+          {activeSection === 'documents' && <DocumentsSection onBack={handleBack} />}
+          {activeSection === 'settings' && <SettingsSection onBack={handleBack} />}
         </div>
       </section>
     </div>
@@ -199,8 +199,21 @@ function MenuSection({
   )
 }
 
+// Back Button Component
+function BackButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 mb-4 transition-colors"
+    >
+      <ArrowLeft className="w-4 h-4" />
+      <span className="text-sm font-medium">Назад к меню</span>
+    </button>
+  )
+}
+
 // Personal Data Section
-function PersonalSection({ user, setUser }: { user: any; setUser: (user: any) => void }) {
+function PersonalSection({ user, setUser, onBack }: { user: any; setUser: (user: any) => void; onBack: () => void }) {
   const [name, setName] = useState(user.name)
   const [email, setEmail] = useState(user.email || '')
   const [isLoading, setIsLoading] = useState(false)
@@ -270,6 +283,7 @@ function PersonalSection({ user, setUser }: { user: any; setUser: (user: any) =>
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6">
+      <BackButton onClick={onBack} />
       <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Личные данные</h2>
       
       {/* Avatar upload */}
@@ -383,7 +397,7 @@ function PersonalSection({ user, setUser }: { user: any; setUser: (user: any) =>
 }
 
 // Notifications Section
-function NotificationsSection({ user, setUser }: { user: any; setUser: (user: any) => void }) {
+function NotificationsSection({ user, setUser, onBack }: { user: any; setUser: (user: any) => void; onBack: () => void }) {
   const [emailNotifications, setEmailNotifications] = useState(user.notifications?.email ?? true)
   const [pushNotifications, setPushNotifications] = useState(user.notifications?.push ?? false)
   const [marketingEmails, setMarketingEmails] = useState(user.notifications?.marketing ?? false)
@@ -432,6 +446,7 @@ function NotificationsSection({ user, setUser }: { user: any; setUser: (user: an
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6">
+      <BackButton onClick={onBack} />
       <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Уведомления</h2>
       
       <div className="space-y-6">
@@ -478,9 +493,10 @@ function NotificationsSection({ user, setUser }: { user: any; setUser: (user: an
 }
 
 // Subscription Section
-function SubscriptionSection() {
+function SubscriptionSection({ onBack }: { onBack: () => void }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6">
+      <BackButton onClick={onBack} />
       <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Подписка</h2>
       
       <div className="p-6 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl mb-6">
@@ -532,7 +548,7 @@ function SubscriptionSection() {
 }
 
 // Documents Section
-function DocumentsSection() {
+function DocumentsSection({ onBack }: { onBack: () => void }) {
   const documents = [
     { id: 1, name: 'Договор оферты.pdf', date: '15.01.2026', size: '245 KB' },
     { id: 2, name: 'Акт выполненных работ.pdf', date: '10.01.2026', size: '128 KB' },
@@ -540,6 +556,7 @@ function DocumentsSection() {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6">
+      <BackButton onClick={onBack} />
       <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Мои документы</h2>
       
       {documents.length > 0 ? (
@@ -570,12 +587,13 @@ function DocumentsSection() {
 }
 
 // Settings Section
-function SettingsSection() {
+function SettingsSection({ onBack }: { onBack: () => void }) {
   const { theme, setTheme } = useTheme()
   const [language, setLanguage] = useState('ru')
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6">
+      <BackButton onClick={onBack} />
       <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Настройки</h2>
       
       <div className="space-y-6">

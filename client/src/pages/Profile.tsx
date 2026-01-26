@@ -150,16 +150,16 @@ function MenuSection({
           <button
             key={item.id}
             onClick={() => onSelect(item.id)}
-            className="w-full flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all group text-left"
+            className="w-full flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-primary-100 dark:hover:border-primary-700 hover:shadow-md transition-all group text-left"
           >
-            <div className="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary-100 transition-colors">
-              <item.icon className="w-5 h-5 text-primary-600" />
+            <div className="w-12 h-12 bg-primary-50 dark:bg-primary-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary-100 dark:group-hover:bg-primary-800/50 transition-colors">
+              <item.icon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
             </div>
             <div className="flex-1">
-              <div className="font-semibold text-gray-900">{item.label}</div>
-              <div className="text-sm text-gray-500">{item.description}</div>
+              <div className="font-semibold text-gray-900 dark:text-white">{item.label}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">{item.description}</div>
             </div>
-            <div className="text-gray-400">
+            <div className="text-gray-400 dark:text-gray-500">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -170,7 +170,7 @@ function MenuSection({
 
       <button
         onClick={onLogout}
-        className="w-full mt-6 flex items-center justify-center gap-2 p-4 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors font-medium"
+        className="w-full mt-6 flex items-center justify-center gap-2 p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors font-medium"
       >
         <LogOut className="w-5 h-5" />
         Выйти из аккаунта
@@ -179,7 +179,7 @@ function MenuSection({
       {!isTelegram && (
         <Link
           to="/"
-          className="hidden md:flex w-full mt-4 items-center justify-center gap-2 p-4 bg-gray-50 text-gray-700 rounded-xl hover:bg-gray-100 transition-colors font-medium"
+          className="hidden md:flex w-full mt-4 items-center justify-center gap-2 p-4 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-medium"
         >
           <ExternalLink className="w-5 h-5" />
           Перейти на главную
@@ -189,7 +189,7 @@ function MenuSection({
       {isAdmin && (
         <Link
           to="/admin"
-          className="w-full mt-4 flex items-center justify-center gap-2 p-4 bg-primary-50 text-primary-700 rounded-xl hover:bg-primary-100 transition-colors font-medium"
+          className="w-full mt-4 flex items-center justify-center gap-2 p-4 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-xl hover:bg-primary-100 dark:hover:bg-primary-800/50 transition-colors font-medium"
         >
           <Shield className="w-5 h-5" />
           Админ-панель

@@ -296,14 +296,15 @@ export default function AdminProjects() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Описание</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Описание (Markdown)</label>
                 <textarea 
                   rows={8} 
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none" 
-                  placeholder="Поддерживаются переносы строк и форматирование"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none font-mono text-sm" 
+                  placeholder="Используйте Markdown:\n**жирный** *курсив* ## Заголовок\n- Пункт списка"
                 />
+                <p className="text-xs text-gray-500 mt-1">Поддерживается Markdown форматирование</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Изображение</label>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, ExternalLink, Loader2 } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 import { useTelegram } from '../context/TelegramContext'
 import { projectsApi } from '../services/api'
 
@@ -111,9 +112,9 @@ export default function Projects() {
                     <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors">
                       {project.title}
                     </h3>
-                    <p className="text-gray-600 mb-4 whitespace-pre-line">
-                      {project.description}
-                    </p>
+                    <div className="text-gray-600 mb-4 prose prose-sm max-w-none">
+                      <ReactMarkdown>{project.description}</ReactMarkdown>
+                    </div>
                     <button className="inline-flex items-center gap-2 text-primary-600 font-medium hover:gap-3 transition-all">
                       Подробнее
                       <ArrowRight className="w-4 h-4" />

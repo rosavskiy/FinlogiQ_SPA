@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTelegram } from '../context/TelegramContext'
+import { useTheme } from '../context/ThemeContext'
 import { useAuthStore } from '../store/authStore'
 import { authApi } from '../services/api'
 
@@ -99,14 +100,18 @@ export default function Login() {
     }
   }
 
+  const { resolvedTheme } = useTheme()
+
   return (
     <div className="pt-16 min-h-[80vh] flex items-center justify-center px-4 py-12 bg-gray-50 dark:bg-gray-900">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">F</span>
-            </div>
+            <img 
+              src={resolvedTheme === 'dark' ? '/NEW_LOGO_LOGO_SMALL_white.svg' : '/NEW_LOGO_LOGO_SMALL.svg'}
+              alt="FinlogiQ"
+              className="w-12 h-12"
+            />
           </Link>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             Вход в аккаунт

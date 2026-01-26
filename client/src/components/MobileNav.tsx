@@ -7,7 +7,7 @@ const navItems = [
   { path: '/', icon: Home, label: 'Главная' },
   { path: '/services', icon: Briefcase, label: 'Услуги' },
   { path: '/projects', icon: Lightbulb, label: 'Проекты' },
-  { path: '/interesting', icon: Newspaper, label: 'Новости' },
+  { path: '/interesting', icon: Newspaper, label: 'Интересное' },
   { path: '/profile', icon: User, label: 'Профиль' },
 ]
 

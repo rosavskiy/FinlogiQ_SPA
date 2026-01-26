@@ -269,17 +269,17 @@ function PersonalSection({ user, setUser }: { user: any; setUser: (user: any) =>
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Личные данные</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Личные данные</h2>
       
       {/* Avatar upload */}
       <div className="flex flex-col items-center mb-6">
         <div className="relative">
-          <div className="w-24 h-24 bg-primary-100 rounded-full flex items-center justify-center overflow-hidden">
+          <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center overflow-hidden">
             {user.avatar ? (
               <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
             ) : (
-              <span className="text-3xl font-bold text-primary-600">
+              <span className="text-3xl font-bold text-primary-600 dark:text-primary-400">
                 {user.name.charAt(0).toUpperCase()}
               </span>
             )}
@@ -299,53 +299,53 @@ function PersonalSection({ user, setUser }: { user: any; setUser: (user: any) =>
             />
           </label>
         </div>
-        <p className="text-sm text-gray-500 mt-2">Нажмите для загрузки фото (макс. 2 МБ)</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Нажмите для загрузки фото (макс. 2 МБ)</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Имя</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Имя</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
+            className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none bg-white dark:bg-gray-700 dark:text-white"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
+            className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none bg-white dark:bg-gray-700 dark:text-white"
           />
         </div>
 
         {user.telegramId ? (
-          <div className="p-4 bg-blue-50 rounded-lg">
-            <div className="flex items-center gap-2 text-blue-700">
+          <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+            <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
               </svg>
               <span className="font-medium">Telegram привязан</span>
             </div>
-            <p className="text-sm text-blue-600 mt-1">ID: {user.telegramId}</p>
+            <p className="text-sm text-blue-600 dark:text-blue-300 mt-1">ID: {user.telegramId}</p>
             {user.telegramUsername && (
-              <p className="text-sm text-blue-600">Username: @{user.telegramUsername}</p>
+              <p className="text-sm text-blue-600 dark:text-blue-300">Username: @{user.telegramUsername}</p>
             )}
           </div>
         ) : (
-          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <div className="flex items-center gap-2 text-gray-700 mb-2">
+          <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+            <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
               </svg>
               <span className="font-medium">Telegram не привязан</span>
             </div>
-            <p className="text-sm text-gray-500 mb-3">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
               Привяжите Telegram для быстрого входа и получения уведомлений
             </p>
             <a
@@ -363,7 +363,7 @@ function PersonalSection({ user, setUser }: { user: any; setUser: (user: any) =>
         )}
 
         {message && (
-          <div className={`p-4 rounded-lg flex items-center gap-2 ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+          <div className={`p-4 rounded-lg flex items-center gap-2 ${message.type === 'success' ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400'}`}>
             {message.type === 'success' ? <Check className="w-5 h-5" /> : <X className="w-5 h-5" />}
             {message.text}
           </div>
@@ -431,44 +431,44 @@ function NotificationsSection({ user, setUser }: { user: any; setUser: (user: an
   )
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Уведомления</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Уведомления</h2>
       
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <div className="font-medium text-gray-900">Email-уведомления</div>
-            <div className="text-sm text-gray-500">Получать уведомления о важных событиях на email</div>
+            <div className="font-medium text-gray-900 dark:text-white">Email-уведомления</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Получать уведомления о важных событиях на email</div>
           </div>
           <Toggle enabled={emailNotifications} onChange={(v) => handleToggle('email', v)} disabled={isSaving} />
         </div>
 
         <div className="flex items-center justify-between">
           <div>
-            <div className="font-medium text-gray-900">Push-уведомления</div>
-            <div className="text-sm text-gray-500">Получать уведомления в браузере</div>
+            <div className="font-medium text-gray-900 dark:text-white">Push-уведомления</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Получать уведомления в браузере</div>
           </div>
           <Toggle enabled={pushNotifications} onChange={(v) => handleToggle('push', v)} disabled={isSaving} />
         </div>
 
         <div className="flex items-center justify-between">
           <div>
-            <div className="font-medium text-gray-900">Маркетинговые рассылки</div>
-            <div className="text-sm text-gray-500">Получать новости и специальные предложения</div>
+            <div className="font-medium text-gray-900 dark:text-white">Маркетинговые рассылки</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Получать новости и специальные предложения</div>
           </div>
           <Toggle enabled={marketingEmails} onChange={(v) => handleToggle('marketing', v)} disabled={isSaving} />
         </div>
       </div>
 
       {message && (
-        <div className={`mt-4 p-4 rounded-lg flex items-center gap-2 ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+        <div className={`mt-4 p-4 rounded-lg flex items-center gap-2 ${message.type === 'success' ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400'}`}>
           {message.type === 'success' ? <Check className="w-5 h-5" /> : <X className="w-5 h-5" />}
           {message.text}
         </div>
       )}
 
-      <div className="mt-6 p-4 bg-amber-50 rounded-lg">
-        <p className="text-sm text-amber-700">
+      <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
+        <p className="text-sm text-amber-700 dark:text-amber-400">
           <strong>Примечание:</strong> Push-уведомления и маркетинговые рассылки пока находятся в разработке. 
           Настройки сохраняются для будущего использования.
         </p>
@@ -480,44 +480,44 @@ function NotificationsSection({ user, setUser }: { user: any; setUser: (user: an
 // Subscription Section
 function SubscriptionSection() {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Подписка</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Подписка</h2>
       
-      <div className="p-6 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl mb-6">
+      <div className="p-6 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <div className="text-sm text-primary-600 font-medium">Текущий план</div>
-            <div className="text-2xl font-bold text-gray-900">Бесплатный</div>
+            <div className="text-sm text-primary-600 dark:text-primary-400 font-medium">Текущий план</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">Бесплатный</div>
           </div>
-          <CreditCard className="w-10 h-10 text-primary-600" />
+          <CreditCard className="w-10 h-10 text-primary-600 dark:text-primary-400" />
         </div>
-        <p className="text-gray-600 text-sm">
+        <p className="text-gray-600 dark:text-gray-400 text-sm">
           Базовый доступ к платформе. Обновитесь для получения дополнительных функций.
         </p>
       </div>
 
       <div className="space-y-4">
-        <div className="p-4 border border-gray-200 rounded-xl">
+        <div className="p-4 border border-gray-200 dark:border-gray-600 rounded-xl">
           <div className="flex items-center justify-between mb-2">
-            <div className="font-semibold text-gray-900">Профессиональный</div>
-            <div className="text-primary-600 font-bold">₽990/мес</div>
+            <div className="font-semibold text-gray-900 dark:text-white">Профессиональный</div>
+            <div className="text-primary-600 dark:text-primary-400 font-bold">₽990/мес</div>
           </div>
-          <ul className="text-sm text-gray-600 space-y-1 mb-4">
+          <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1 mb-4">
             <li>• Расширенная аналитика</li>
             <li>• Приоритетная поддержка</li>
             <li>• Экспорт отчётов</li>
           </ul>
-          <button className="w-full px-4 py-2 border border-primary-600 text-primary-600 rounded-lg hover:bg-primary-50 transition-colors font-medium">
+          <button className="w-full px-4 py-2 border border-primary-600 dark:border-primary-400 text-primary-600 dark:text-primary-400 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors font-medium">
             Выбрать план
           </button>
         </div>
 
-        <div className="p-4 border border-primary-200 bg-primary-50/50 rounded-xl">
+        <div className="p-4 border border-primary-200 dark:border-primary-700 bg-primary-50/50 dark:bg-primary-900/20 rounded-xl">
           <div className="flex items-center justify-between mb-2">
-            <div className="font-semibold text-gray-900">Бизнес</div>
-            <div className="text-primary-600 font-bold">₽2990/мес</div>
+            <div className="font-semibold text-gray-900 dark:text-white">Бизнес</div>
+            <div className="text-primary-600 dark:text-primary-400 font-bold">₽2990/мес</div>
           </div>
-          <ul className="text-sm text-gray-600 space-y-1 mb-4">
+          <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1 mb-4">
             <li>• Всё из Профессионального</li>
             <li>• API доступ</li>
             <li>• Персональный менеджер</li>
@@ -539,21 +539,21 @@ function DocumentsSection() {
   ]
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Мои документы</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Мои документы</h2>
       
       {documents.length > 0 ? (
         <div className="space-y-3">
           {documents.map((doc) => (
-            <div key={doc.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
-              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-red-600" />
+            <div key={doc.id} className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+              <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 text-red-600 dark:text-red-400" />
               </div>
               <div className="flex-1">
-                <div className="font-medium text-gray-900">{doc.name}</div>
-                <div className="text-sm text-gray-500">{doc.date} • {doc.size}</div>
+                <div className="font-medium text-gray-900 dark:text-white">{doc.name}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">{doc.date} • {doc.size}</div>
               </div>
-              <button className="text-primary-600 hover:text-primary-700 font-medium text-sm">
+              <button className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium text-sm">
                 Скачать
               </button>
             </div>
@@ -561,8 +561,8 @@ function DocumentsSection() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <div className="text-gray-500">Документов пока нет</div>
+          <FileText className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+          <div className="text-gray-500 dark:text-gray-400">Документов пока нет</div>
         </div>
       )}
     </div>

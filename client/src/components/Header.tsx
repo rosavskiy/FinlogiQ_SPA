@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { Menu, X, User, LogOut } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
+import { useTheme } from '../context/ThemeContext'
 
 const navLinks = [
   { path: '/projects', label: 'Проекты' },
@@ -13,6 +14,7 @@ const navLinks = [
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { isAuthenticated, user, isImpersonating, stopImpersonation, originalUser } = useAuthStore()
+  const { resolvedTheme } = useTheme()
 
   // Header with dark mode support
   const headerBg = 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-100 dark:border-gray-800'
@@ -46,7 +48,7 @@ export default function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <img 
-              src="/NEW_LOGO.svg" 
+              src={resolvedTheme === 'dark' ? '/NEW_LOGO_WHITE.svg' : '/NEW_LOGO.svg'}
               alt="FinlogiQ" 
               className="h-10 w-auto"
             />

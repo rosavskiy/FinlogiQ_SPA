@@ -169,12 +169,12 @@ export default function Projects() {
       </section>
 
       {/* CTA */}
-      <section className="py-12 md:py-16 bg-gray-50">
+      <section className="py-12 md:py-16 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Хотите стать следующим кейсом?
           </h2>
-          <p className="text-gray-600 mb-8 max-w-xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-xl mx-auto">
             Расскажите о вашем проекте, и мы подготовим индивидуальное предложение
           </p>
           <Link

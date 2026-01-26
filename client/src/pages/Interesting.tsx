@@ -67,19 +67,19 @@ export default function Interesting() {
   return (
     <div className="pt-16 pb-20 md:pb-0">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-gray-50 to-white py-12 md:py-20">
+      <section className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Интересное
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
             Статьи, аналитика и новости из мира финансов
           </p>
         </div>
       </section>
 
       {/* Categories Filter */}
-      <section className="sticky top-0 md:top-16 z-40 bg-white border-b border-gray-100">
+      <section className="sticky top-0 md:top-16 z-40 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-2 py-4 overflow-x-auto scrollbar-hide">
             {categories.map((category) => (
@@ -89,7 +89,7 @@ export default function Interesting() {
                 className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                   selectedCategory === category
                     ? 'bg-primary-600 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
                 {category}
@@ -100,7 +100,7 @@ export default function Interesting() {
       </section>
 
       {/* Articles */}
-      <section className="py-8 md:py-12">
+      <section className="py-8 md:py-12 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {loading ? (
             <div className="flex items-center justify-center py-20">
@@ -111,7 +111,7 @@ export default function Interesting() {
               {filteredArticles.map((article, index) => (
                 <article
                   key={article._id}
-                  className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 animate-slide-up cursor-pointer"
+                  className="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all duration-300 animate-slide-up cursor-pointer"
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   {/* Image placeholder */}
@@ -137,12 +137,12 @@ export default function Interesting() {
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
                       {article.title}
                     </h3>
 
                     {/* Excerpt */}
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
                       {article.excerpt}
                     </p>
 
@@ -165,7 +165,7 @@ export default function Interesting() {
 
           {!loading && filteredArticles.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-500">В этой категории пока нет статей</p>
+              <p className="text-gray-500 dark:text-gray-400">В этой категории пока нет статей</p>
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ExternalLink, Loader2 } from 'lucide-react'
+import { ArrowRight, ExternalLink, Loader2, ChevronDown, ChevronUp } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import { useTelegram } from '../context/TelegramContext'
 import { projectsApi } from '../services/api'
@@ -21,10 +21,25 @@ const statusLabels: Record<string, { label: string; color: string }> = {
   upcoming: { label: 'Планируется', color: 'bg-blue-500/90 text-white' },
 }
 
+const MAX_DESCRIPTION_LENGTH = 200
+
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const [expandedProjects, setExpandedProjects] = useState<Set<string>>(new Set())
   const { showBackButton, hideBackButton, isTelegram } = useTelegram()
+
+  const toggleExpand = (projectId: string) => {
+    setExpandedProjects(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(projectId)) {
+        newSet.delete(projectId)
+      } else {
+        newSet.add(projectId)
+      }
+      return newSet
+    })
+  }
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -113,7 +128,33 @@ export default function Projects() {
                       {project.title}
                     </h3>
                     <div className="text-gray-600 mb-4 prose prose-sm max-w-none">
-                      <ReactMarkdown>{project.description}</ReactMarkdown>
+                      {project.description.length > MAX_DESCRIPTION_LENGTH && !expandedProjects.has(project._id) ? (
+                        <>
+                          <ReactMarkdown>
+                            {project.description.substring(0, MAX_DESCRIPTION_LENGTH) + '...'}
+                          </ReactMarkdown>
+                          <button
+                            onClick={() => toggleExpand(project._id)}
+                            className="inline-flex items-center gap-1 text-primary-600 font-medium text-sm mt-2 hover:gap-2 transition-all"
+                          >
+                            Развернуть
+                            <ChevronDown className="w-4 h-4" />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <ReactMarkdown>{project.description}</ReactMarkdown>
+                          {project.description.length > MAX_DESCRIPTION_LENGTH && (
+                            <button
+                              onClick={() => toggleExpand(project._id)}
+                              className="inline-flex items-center gap-1 text-primary-600 font-medium text-sm mt-2 hover:gap-2 transition-all"
+                            >
+                              Свернуть
+                              <ChevronUp className="w-4 h-4" />
+                            </button>
+                          )}
+                        </>
+                      )}
                     </div>
                     <button className="inline-flex items-center gap-2 text-primary-600 font-medium hover:gap-3 transition-all">
                       Подробнее

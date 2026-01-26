@@ -3,6 +3,7 @@ import Header from './Header'
 import Footer from './Footer'
 import { useTelegram } from '../context/TelegramContext'
 import MobileNav from './MobileNav'
+import PWAInstallBanner from './PWAInstallBanner'
 
 export default function Layout() {
   const { isTelegram } = useTelegram()
@@ -21,6 +22,9 @@ export default function Layout() {
       
       {/* Hide footer in Telegram */}
       {!isTelegram && <Footer />}
+
+      {/* Custom PWA install banner */}
+      <PWAInstallBanner />
     </div>
   )
 }

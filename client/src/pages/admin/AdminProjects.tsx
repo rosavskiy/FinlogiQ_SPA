@@ -10,6 +10,7 @@ interface Project {
   category: string
   status: 'active' | 'completed' | 'upcoming'
   isPublished: boolean
+  image?: string
   createdAt: string
 }
 
@@ -34,7 +35,9 @@ export default function AdminProjects() {
     category: 'Разработка ПО',
     status: 'active' as 'active' | 'completed' | 'upcoming',
     isPublished: true,
+    image: '',
   })
+  const [imagePreview, setImagePreview] = useState<string>('')
   const [saving, setSaving] = useState(false)
 
   const fetchProjects = async () => {
@@ -66,7 +69,9 @@ export default function AdminProjects() {
         category: project.category,
         status: project.status,
         isPublished: project.isPublished,
+        image: project.image || '',
       })
+      setImagePreview(project.image || '')
     } else {
       setEditingProject(null)
       setFormData({
@@ -75,9 +80,34 @@ export default function AdminProjects() {
         category: 'Разработка ПО',
         status: 'active',
         isPublished: true,
+        image: '',
       })
+      setImagePreview('')
     }
     setShowModal(true)
+  }
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Размер файла не должен превышать 5 МБ')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      const base64String = reader.result as string
+      setFormData({ ...formData, image: base64String })
+      setImagePreview(base64String)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleRemoveImage = () => {
+    setFormData({ ...formData, image: '' })
+    setImagePreview('')
   }
 
   const handleSave = async () => {
@@ -268,11 +298,48 @@ export default function AdminProjects() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Описание</label>
                 <textarea 
-                  rows={3} 
+                  rows={8} 
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none" 
+                  placeholder="Поддерживаются переносы строк и форматирование"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Изображение</label>
+                {imagePreview ? (
+                  <div className="relative">
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      id="image-upload"
+                    />
+                    <label htmlFor="image-upload" className="cursor-pointer">
+                      <div className="text-gray-500">
+                        <Plus className="w-8 h-8 mx-auto mb-2" />
+                        <p className="text-sm">Нажмите для загрузки изображения</p>
+                        <p className="text-xs text-gray-400 mt-1">Макс. 5 МБ</p>
+                      </div>
+                    </label>
+                  </div>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <input 

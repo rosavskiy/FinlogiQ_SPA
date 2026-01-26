@@ -10,6 +10,7 @@ interface Project {
   description: string
   category: string
   status: 'active' | 'completed' | 'upcoming'
+  image?: string
   createdAt: string
 }
 
@@ -78,13 +79,21 @@ export default function Projects() {
                   className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 animate-slide-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  {/* Image placeholder */}
+                  {/* Image */}
                   <div className="aspect-video bg-gradient-to-br from-primary-100 to-primary-200 relative overflow-hidden">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 bg-primary-500/20 rounded-2xl flex items-center justify-center">
-                        <span className="text-3xl font-bold text-primary-600">{index + 1}</span>
+                    {project.image ? (
+                      <img 
+                        src={project.image} 
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-16 h-16 bg-primary-500/20 rounded-2xl flex items-center justify-center">
+                          <span className="text-3xl font-bold text-primary-600">{index + 1}</span>
+                        </div>
                       </div>
-                    </div>
+                    )}
                     <div className="absolute top-4 left-4 flex gap-2">
                       <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-xs font-medium text-gray-700 rounded-full">
                         {project.category}
@@ -102,7 +111,7 @@ export default function Projects() {
                     <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors">
                       {project.title}
                     </h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-gray-600 mb-4 whitespace-pre-line">
                       {project.description}
                     </p>
                     <button className="inline-flex items-center gap-2 text-primary-600 font-medium hover:gap-3 transition-all">

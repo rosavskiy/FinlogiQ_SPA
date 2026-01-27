@@ -11,19 +11,25 @@ export default function AdminSettings() {
     enableTelegramAuth: true,
     maintenanceMode: false,
     showLoadingAnimation: true,
+    showParticlesBackground: true,
   })
 
   useEffect(() => {
-    // Загружаем настройку анимации из localStorage
+    // Загружаем настройки из localStorage
     const showAnimation = localStorage.getItem('showLoadingAnimation')
     if (showAnimation !== null) {
       setSettings(prev => ({ ...prev, showLoadingAnimation: showAnimation === 'true' }))
     }
+    const showParticles = localStorage.getItem('showParticlesBackground')
+    if (showParticles !== null) {
+      setSettings(prev => ({ ...prev, showParticlesBackground: showParticles === 'true' }))
+    }
   }, [])
 
   const handleSave = () => {
-    // Сохраняем настройку анимации в localStorage
+    // Сохраняем настройки в localStorage
     localStorage.setItem('showLoadingAnimation', settings.showLoadingAnimation.toString())
+    localStorage.setItem('showParticlesBackground', settings.showParticlesBackground.toString())
     alert('Настройки сохранены!')
   }
 
@@ -176,6 +182,18 @@ export default function AdminSettings() {
                 className={`relative w-12 h-6 rounded-full transition-colors ${settings.showLoadingAnimation ? 'bg-primary-600' : 'bg-gray-300'}`}
               >
                 <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${settings.showLoadingAnimation ? 'left-7' : 'left-1'}`} />
+              </button>
+            </div>
+            <div className="flex items-center justify-between py-2">
+              <div>
+                <p className="font-medium text-gray-900">Динамический фон</p>
+                <p className="text-sm text-gray-500">Анимированные частицы на главной странице</p>
+              </div>
+              <button
+                onClick={() => setSettings({ ...settings, showParticlesBackground: !settings.showParticlesBackground })}
+                className={`relative w-12 h-6 rounded-full transition-colors ${settings.showParticlesBackground ? 'bg-primary-600' : 'bg-gray-300'}`}
+              >
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${settings.showParticlesBackground ? 'left-7' : 'left-1'}`} />
               </button>
             </div>
           </div>

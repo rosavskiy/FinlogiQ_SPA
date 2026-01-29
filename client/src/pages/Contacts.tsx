@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock } from 'lucide-react'
 import { useTelegram } from '../context/TelegramContext'
 import { contactApi } from '../services/api'
+import { useSettings } from '../hooks/useSettings'
 
 export default function Contacts() {
+  const { settings } = useSettings()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -99,7 +101,7 @@ export default function Contacts() {
               <div className="space-y-6">
                 {/* Email */}
                 <a
-                  href="mailto:info@finlogiq.ru"
+                  href={`mailto:${settings.contactEmail}`}
                   className="flex items-start gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-primary-100 dark:hover:border-primary-700 hover:shadow-md transition-all group"
                 >
                   <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary-600 transition-colors">
@@ -107,13 +109,13 @@ export default function Contacts() {
                   </div>
                   <div>
                     <div className="font-semibold text-gray-900 dark:text-white">Email</div>
-                    <div className="text-primary-600 dark:text-primary-400">info@finlogiq.ru</div>
+                    <div className="text-primary-600 dark:text-primary-400">{settings.contactEmail}</div>
                   </div>
                 </a>
 
                 {/* Phone */}
                 <a
-                  href="tel:+74951234567"
+                  href={`tel:${settings.contactPhone.replace(/[^+\d]/g, '')}`}
                   className="flex items-start gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-primary-100 dark:hover:border-primary-700 hover:shadow-md transition-all group"
                 >
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-green-600 transition-colors">
@@ -121,7 +123,7 @@ export default function Contacts() {
                   </div>
                   <div>
                     <div className="font-semibold text-gray-900 dark:text-white">Телефон</div>
-                    <div className="text-gray-600 dark:text-gray-400">+7 (495) 123-45-67</div>
+                    <div className="text-gray-600 dark:text-gray-400">{settings.contactPhone}</div>
                   </div>
                 </a>
 
@@ -135,7 +137,7 @@ export default function Contacts() {
                   </div>
                   <div>
                     <div className="font-semibold text-gray-900 dark:text-white">Telegram</div>
-                    <div className="text-gray-600 dark:text-gray-400">@finlogiq_support</div>
+                    <div className="text-gray-600 dark:text-gray-400">{settings.telegramBot}</div>
                   </div>
                 </button>
 
@@ -146,7 +148,7 @@ export default function Contacts() {
                   </div>
                   <div>
                     <div className="font-semibold text-gray-900 dark:text-white">Адрес</div>
-                    <div className="text-gray-600 dark:text-gray-400">Москва, Россия</div>
+                    <div className="text-gray-600 dark:text-gray-400">{settings.contactAddress}</div>
                   </div>
                 </div>
 

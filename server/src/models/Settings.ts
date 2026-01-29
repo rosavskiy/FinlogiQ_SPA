@@ -4,6 +4,8 @@ export interface ISettings extends Document {
   siteName: string
   siteDescription: string
   contactEmail: string
+  contactPhone: string
+  contactAddress: string
   telegramBot: string
   enableRegistration: boolean
   enableTelegramAuth: boolean
@@ -27,6 +29,14 @@ const settingsSchema = new Schema<ISettings>(
     contactEmail: {
       type: String,
       default: 'info@finlogiq.ru',
+    },
+    contactPhone: {
+      type: String,
+      default: '+7 (495) 123-45-67',
+    },
+    contactAddress: {
+      type: String,
+      default: 'Москва, Россия',
     },
     telegramBot: {
       type: String,

@@ -7,6 +7,8 @@ interface Settings {
   siteName: string
   siteDescription: string
   contactEmail: string
+  contactPhone: string
+  contactAddress: string
   telegramBot: string
   enableRegistration: boolean
   enableTelegramAuth: boolean
@@ -19,6 +21,8 @@ const defaultSettings: Settings = {
   siteName: 'FinLogiQ',
   siteDescription: 'Финансовые решения для бизнеса',
   contactEmail: 'info@finlogiq.ru',
+  contactPhone: '+7 (495) 123-45-67',
+  contactAddress: 'Москва, Россия',
   telegramBot: '@finlogiq_bot',
   enableRegistration: true,
   enableTelegramAuth: true,

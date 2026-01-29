@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
 import { Mail, Phone, MapPin } from 'lucide-react'
+import { useSettings } from '../hooks/useSettings'
 
 export default function Footer() {
+  const { settings } = useSettings()
+
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -38,19 +41,19 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
-                <a href="mailto:info@finlogiq.ru" className="hover:text-white transition-colors">
-                  info@finlogiq.ru
+                <a href={`mailto:${settings.contactEmail}`} className="hover:text-white transition-colors">
+                  {settings.contactEmail}
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                <a href="tel:+74951234567" className="hover:text-white transition-colors">
-                  +7 (495) 123-45-67
+                <a href={`tel:${settings.contactPhone.replace(/[^+\d]/g, '')}`} className="hover:text-white transition-colors">
+                  {settings.contactPhone}
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5" />
-                <span>Москва, Россия</span>
+                <span>{settings.contactAddress}</span>
               </li>
             </ul>
           </div>

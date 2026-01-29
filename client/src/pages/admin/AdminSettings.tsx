@@ -11,6 +11,8 @@ export default function AdminSettings() {
     siteName: 'FinLogiQ',
     siteDescription: 'Финансовые решения для бизнеса',
     contactEmail: 'info@finlogiq.ru',
+    contactPhone: '+7 (495) 123-45-67',
+    contactAddress: 'Москва, Россия',
     telegramBot: '@finlogiq_bot',
     enableRegistration: true,
     enableTelegramAuth: true,
@@ -114,10 +116,34 @@ export default function AdminSettings() {
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Телефон
+              </label>
+              <input
+                type="tel"
+                value={settings.contactPhone}
+                onChange={(e) => setSettings({ ...settings, contactPhone: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
+                placeholder="+7 (495) 123-45-67"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Адрес
+              </label>
+              <input
+                type="text"
+                value={settings.contactAddress}
+                onChange={(e) => setSettings({ ...settings, contactAddress: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
+                placeholder="Москва, Россия"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Telegram settings */}
+        {/* Telegram settings */
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">

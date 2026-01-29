@@ -15,6 +15,8 @@ router.get('/', async (req: Request, res: Response) => {
         siteName: 'FinLogiQ',
         siteDescription: 'Финансовые решения для бизнеса',
         contactEmail: 'info@finlogiq.ru',
+        contactPhone: '+7 (495) 123-45-67',
+        contactAddress: 'Москва, Россия',
         telegramBot: '@finlogiq_bot',
         enableRegistration: true,
         enableTelegramAuth: true,
@@ -37,6 +39,8 @@ router.put('/', adminAuth, async (req: AuthRequest, res: Response) => {
       siteName,
       siteDescription,
       contactEmail,
+      contactPhone,
+      contactAddress,
       telegramBot,
       enableRegistration,
       enableTelegramAuth,
@@ -55,6 +59,8 @@ router.put('/', adminAuth, async (req: AuthRequest, res: Response) => {
     if (siteName !== undefined) settings.siteName = siteName
     if (siteDescription !== undefined) settings.siteDescription = siteDescription
     if (contactEmail !== undefined) settings.contactEmail = contactEmail
+    if (contactPhone !== undefined) settings.contactPhone = contactPhone
+    if (contactAddress !== undefined) settings.contactAddress = contactAddress
     if (telegramBot !== undefined) settings.telegramBot = telegramBot
     if (enableRegistration !== undefined) settings.enableRegistration = enableRegistration
     if (enableTelegramAuth !== undefined) settings.enableTelegramAuth = enableTelegramAuth

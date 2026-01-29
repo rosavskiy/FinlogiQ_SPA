@@ -71,7 +71,7 @@ export default function Projects() {
             Наши проекты
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
-            Реализованные кейсы и текущие проекты в области разработки ПО и финансового консалтинга
+            Реализованные кейсы и текущие проекты
           </p>
         </div>
       </section>

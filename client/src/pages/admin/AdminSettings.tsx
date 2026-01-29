@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Save, Globe, Bell, Shield, Database, Film } from 'lucide-react'
 import axios from 'axios'
+import { useAuthStore } from '../../store/authStore'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
 
 export default function AdminSettings() {
+  const { token } = useAuthStore()
   const [settings, setSettings] = useState({
     siteName: 'FinLogiQ',
     siteDescription: 'Финансовые решения для бизнеса',
@@ -37,7 +39,6 @@ export default function AdminSettings() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      const token = localStorage.getItem('token')
       await axios.put(`${API_URL}/settings`, settings, {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Save, Globe, Bell, Shield, Database, Film } from 'lucide-react'
+import axios from 'axios'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState({
@@ -13,24 +16,50 @@ export default function AdminSettings() {
     showLoadingAnimation: true,
     showParticlesBackground: true,
   })
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    // Загружаем настройки из localStorage
-    const showAnimation = localStorage.getItem('showLoadingAnimation')
-    if (showAnimation !== null) {
-      setSettings(prev => ({ ...prev, showLoadingAnimation: showAnimation === 'true' }))
-    }
-    const showParticles = localStorage.getItem('showParticlesBackground')
-    if (showParticles !== null) {
-      setSettings(prev => ({ ...prev, showParticlesBackground: showParticles === 'true' }))
-    }
+    fetchSettings()
   }, [])
 
-  const handleSave = () => {
-    // Сохраняем настройки в localStorage
-    localStorage.setItem('showLoadingAnimation', settings.showLoadingAnimation.toString())
-    localStorage.setItem('showParticlesBackground', settings.showParticlesBackground.toString())
-    alert('Настройки сохранены!')
+  const fetchSettings = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/settings`)
+      setSettings(response.data)
+    } catch (error) {
+      console.error('Ошибка загрузки настроек:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      const token = localStorage.getItem('token')
+      await axios.put(`${API_URL}/settings`, settings, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      alert('Настройки успешно сохранены!')
+      // Обновляем настройки на всех клиентах
+      window.dispatchEvent(new Event('settingsUpdated'))
+    } catch (error) {
+      console.error('Ошибка сохранения настроек:', error)
+      alert('Ошибка при сохранении настроек')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
   }
 
   return (
@@ -229,10 +258,11 @@ export default function AdminSettings() {
       <div className="flex justify-end">
         <button
           onClick={handleSave}
-          className="inline-flex items-center gap-2 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          disabled={saving}
+          className="inline-flex items-center gap-2 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Save className="w-5 h-5" />
-          Сохранить изменения
+          {saving ? 'Сохранение...' : 'Сохранить изменения'}
         </button>
       </div>
     </div>

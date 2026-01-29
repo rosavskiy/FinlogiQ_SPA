@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useTelegram } from './context/TelegramContext'
+import { useSettings } from './hooks/useSettings'
 import LoadingScreen from './components/LoadingScreen'
 import Layout from './components/Layout'
 import Home from './pages/Home'
@@ -23,24 +24,24 @@ import {
 
 function App() {
   const { isTelegram } = useTelegram()
+  const { settings } = useSettings()
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     // Проверяем настройку анимации и показывали ли уже загрузку в этой сессии
-    const animationEnabled = localStorage.getItem('showLoadingAnimation') !== 'false'
     const hasSeenLoading = sessionStorage.getItem('hasSeenLoading')
     
-    if (!animationEnabled || hasSeenLoading) {
+    if (!settings.showLoadingAnimation || hasSeenLoading) {
       setIsLoading(false)
     }
-  }, [])
+  }, [settings.showLoadingAnimation])
 
   const handleLoadingComplete = () => {
     sessionStorage.setItem('hasSeenLoading', 'true')
     setIsLoading(false)
   }
 
-  if (isLoading) {
+  if (isLoading && settings.showLoadingAnimation) {
     return <LoadingScreen onComplete={handleLoadingComplete} />
   }
 

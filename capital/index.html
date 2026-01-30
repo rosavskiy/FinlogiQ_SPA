@@ -180,6 +180,174 @@
             50% { transform: translateY(-20px) rotate(5deg); }
         }
         
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes drawLine {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Stats counter animation */
+        .stats-section {
+            background: linear-gradient(135deg, var(--secondary) 0%, #1e3a5f 100%);
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230fa0e4' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-number span {
+            font-size: 2rem;
+        }
+        
+        .stat-label {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        /* Animated chart bars */
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 0.5rem;
+            height: 80px;
+            margin-top: 1rem;
+        }
+        
+        .chart-bar {
+            width: 12px;
+            background: linear-gradient(to top, var(--primary), #38bdf8);
+            border-radius: 4px 4px 0 0;
+            animation: growBar 1.5s ease-out forwards;
+            transform-origin: bottom;
+        }
+        
+        @keyframes growBar {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+        
+        .chart-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+        .chart-bar:nth-child(2) { height: 60%; animation-delay: 0.2s; }
+        .chart-bar:nth-child(3) { height: 45%; animation-delay: 0.3s; }
+        .chart-bar:nth-child(4) { height: 80%; animation-delay: 0.4s; }
+        .chart-bar:nth-child(5) { height: 65%; animation-delay: 0.5s; }
+        .chart-bar:nth-child(6) { height: 90%; animation-delay: 0.6s; }
+        .chart-bar:nth-child(7) { height: 100%; animation-delay: 0.7s; }
+        
+        /* Process flow visualization */
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .process-step {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .process-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 10px 30px rgba(15, 160, 228, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .process-icon svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+        
+        .process-step h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .process-arrow {
+            color: var(--primary);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        /* Glowing effect for important numbers */
+        .glow-number {
+            text-shadow: 0 0 20px rgba(15, 160, 228, 0.5);
+        }
+        
         .hero-content {
             max-width: 1400px;
             margin: 0 auto;
@@ -914,6 +1082,18 @@
             .footer-social {
                 justify-content: center;
             }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .process-flow {
+                flex-direction: column;
+            }
+            
+            .process-arrow {
+                transform: rotate(90deg);
+            }
         }
         
         @media (max-width: 768px) {
@@ -923,6 +1103,15 @@
             
             .hero h1 {
                 font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
             }
             
             .stats-grid {
@@ -954,6 +1143,7 @@
                 padding: 1rem;
                 margin-bottom: 1rem;
                 box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                overflow: hidden;
             }
             
             .pricing-table td {
@@ -961,6 +1151,8 @@
                 border: none;
                 position: relative;
                 padding-left: 0;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
             }
             
             .pricing-table td::before {
@@ -981,8 +1173,13 @@
                 margin-bottom: 0.5rem;
             }
             
+            .pricing-table td:first-child::before {
+                display: none;
+            }
+            
             .pricing-table td.price-value {
                 font-size: 1.1rem;
+                white-space: normal;
             }
             
             .pricing-table tr:hover {
@@ -1071,6 +1268,90 @@
         </div>
         
         <span class="hero-year">/ 2026</span>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number glow-number">50<span>+</span></div>
+                <div class="stat-label">Успешных размещений</div>
+                <div class="chart-bars">
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number glow-number">15<span>млрд ₽</span></div>
+                <div class="stat-label">Привлечено финансирования</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number glow-number">2.5<span>мес</span></div>
+                <div class="stat-label">Средний срок размещения</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number glow-number">26К<span>+</span></div>
+                <div class="stat-label">Аудитория инвесторов</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Flow Section -->
+    <section style="background: var(--bg-section); padding: 4rem 0;">
+        <div class="container">
+            <h2 class="section-title" style="text-align: center; margin-bottom: 1rem;">Как мы работаем</h2>
+            <p class="section-subtitle" style="text-align: center;">От идеи до размещения — прозрачный и понятный процесс</p>
+            
+            <div class="process-flow">
+                <div class="process-step">
+                    <div class="process-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    </div>
+                    <h4>Анализ компании</h4>
+                </div>
+                
+                <div class="process-arrow">→</div>
+                
+                <div class="process-step">
+                    <div class="process-icon" style="animation-delay: 0.3s;">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    </div>
+                    <h4>Документация</h4>
+                </div>
+                
+                <div class="process-arrow">→</div>
+                
+                <div class="process-step">
+                    <div class="process-icon" style="animation-delay: 0.6s;">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </div>
+                    <h4>Регистрация</h4>
+                </div>
+                
+                <div class="process-arrow">→</div>
+                
+                <div class="process-step">
+                    <div class="process-icon" style="animation-delay: 0.9s;">
+                        <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                    </div>
+                    <h4>Маркетинг</h4>
+                </div>
+                
+                <div class="process-arrow">→</div>
+                
+                <div class="process-step">
+                    <div class="process-icon" style="animation-delay: 1.2s;">
+                        <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                    </div>
+                    <h4>Размещение</h4>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Advantages Section -->
@@ -1297,7 +1578,7 @@
                     <div class="pricing-note">
                         / приведённые в таблице значения соответствуют параметрам выпуска суммой 300 млн рублей на 3 года обращения
                     </div>
-                    <a href="mailto:bonds@finlogiq.ru?subject=Расчёт%20затрат%20эмитента" class="cta-button" style="margin-top: 2rem; display: inline-block;">Рассчитать</a>
+                    <a href="https://t.me/finlogiq_ceo" target="_blank" class="cta-button" style="margin-top: 2rem; display: inline-block;">Рассчитать</a>
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">/ напишите нам для расчёта затрат</p>
                 </div>
                 
@@ -1486,8 +1767,10 @@
             <h2>Готовы обсудить ваш проект?</h2>
             <p>Свяжитесь с нами для бесплатной консультации по организации облигационного выпуска</p>
             <div class="cta-buttons">
-                <a href="mailto:bonds@finlogiq.ru" class="cta-button">Написать нам</a>
-                <a href="tel:+79918924418" class="cta-button-outline">+7 (991) 892-44-18</a>
+                <a href="https://t.me/finlogiq_ceo" class="cta-button" target="_blank">
+                    <svg style="width: 20px; height: 20px; margin-right: 8px; vertical-align: middle; fill: currentColor;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z"/></svg>
+                    Написать в Telegram
+                </a>
             </div>
         </div>
     </section>
@@ -1512,7 +1795,7 @@
                         </ul>
                     </div>
                     <div>
-                        <h4>"Экосистема"</h4>
+                        <h4>Экосистема</h4>
                         <ul>
                             <li><a href="https://finlogiq.ru">Code</a></li>
                             <li><a href="https://capital.finlogiq.ru">Capital</a></li>
@@ -1521,9 +1804,7 @@
                     <div>
                         <h4>Контакты</h4>
                         <ul>
-                            <li><a href="mailto:bonds@finlogiq.ru">bonds@finlogiq.ru</a></li>
-                            <li><a href="tel:+79918924418">+7 (991) 892-44-18</a></li>
-                            
+                            <li><a href="https://t.me/finlogiq_ceo" target="_blank">Telegram</a></li>
                         </ul>
                     </div>
                 </div>
@@ -1556,6 +1837,69 @@
                 }
             });
         });
+        
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Trigger chart bar animations
+                    const chartBars = entry.target.querySelectorAll('.chart-bar');
+                    chartBars.forEach((bar, index) => {
+                        bar.style.animationPlayState = 'running';
+                    });
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all stat items and sections
+        document.querySelectorAll('.stat-item, .process-step, .service-card, .advantage-card').forEach(el => {
+            el.classList.add('animate-on-scroll');
+            observer.observe(el);
+        });
+        
+        // Counter animation for stats
+        const animateCounters = () => {
+            document.querySelectorAll('.stat-number').forEach(counter => {
+                const text = counter.textContent;
+                const match = text.match(/[\d.]+/);
+                if (match) {
+                    const target = parseFloat(match[0]);
+                    const suffix = text.replace(match[0], '');
+                    let current = 0;
+                    const increment = target / 50;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            counter.innerHTML = text;
+                            clearInterval(timer);
+                        } else {
+                            counter.innerHTML = (target >= 10 ? Math.floor(current) : current.toFixed(1)) + suffix;
+                        }
+                    }, 30);
+                }
+            });
+        };
+        
+        // Trigger counter animation when stats section is visible
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) {
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+            statsObserver.observe(statsSection);
+        }
     </script>
 </body>
 </html>

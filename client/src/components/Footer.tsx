@@ -8,7 +8,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="inline-block mb-4">
@@ -32,6 +32,23 @@ export default function Footer() {
               <li><Link to="/services" className="hover:text-white transition-colors">Услуги</Link></li>
               <li><Link to="/interesting" className="hover:text-white transition-colors">Интересное</Link></li>
               <li><Link to="/contacts" className="hover:text-white transition-colors">Контакты</Link></li>
+            </ul>
+          </div>
+
+          {/* Ecosystem */}
+          <div>
+            <h3 className="font-semibold text-white mb-4">Экосистема</h3>
+            <ul className="space-y-2">
+              <li>
+                <a href="https://finlogiq.ru" className="hover:text-white transition-colors">
+                  Code
+                </a>
+              </li>
+              <li>
+                <a href="https://capital.finlogiq.ru" className="hover:text-white transition-colors">
+                  Capital
+                </a>
+              </li>
             </ul>
           </div>
 

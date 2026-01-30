@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinlogiQ CAPITAL — Организация облигационных выпусков</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        :root {
+            --primary: #0fa0e4;
+            --primary-dark: #0d8bc7;
+            --secondary: #17254c;
+            --accent: #6e8087;
+            --bg-light: #ffffff;
+            --bg-section: #f8fafc;
+            --bg-gradient: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #e0f2fe 100%);
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: rgba(15, 160, 228, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+        
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            height: 45px;
+        }
+        
+        nav ul {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        .cta-button {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        
+        .cta-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(15, 160, 228, 0.3);
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(15, 160, 228, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(15, 160, 228, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        /* Floating 3D elements */
+        .float-element {
+            position: absolute;
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .float-element.ring-1 {
+            width: 200px;
+            height: 200px;
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+            top: 20%;
+            right: 15%;
+            transform: rotateX(60deg);
+            animation-delay: 0s;
+        }
+        
+        .float-element.ring-2 {
+            width: 120px;
+            height: 120px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            bottom: 30%;
+            left: 10%;
+            transform: rotateX(45deg) rotateY(30deg);
+            animation-delay: 2s;
+        }
+        
+        .float-element.bar-1 {
+            width: 60px;
+            height: 8px;
+            background: var(--primary);
+            top: 40%;
+            right: 25%;
+            transform: rotate(-30deg);
+            animation-delay: 1s;
+        }
+        
+        .float-element.bar-2 {
+            width: 40px;
+            height: 6px;
+            background: var(--primary);
+            bottom: 25%;
+            right: 35%;
+            transform: rotate(45deg);
+            animation-delay: 3s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-logo {
+            height: 60px;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+        
+        .hero h1 span {
+            color: var(--primary);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            color: var(--text-dark);
+        }
+        
+        .hero-year {
+            position: absolute;
+            bottom: 3rem;
+            right: 3rem;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+        }
+        
+        /* Section Styles */
+        section {
+            padding: 6rem 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+        
+        /* Advantages Section */
+        .advantages {
+            background: var(--bg-section);
+        }
+        
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 4rem;
+            align-items: start;
+        }
+        
+        .advantages-intro h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .advantages-intro h2 span {
+            color: var(--primary);
+        }
+        
+        .advantages-intro p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .advantages-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .advantage-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .advantage-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.75rem;
+        }
+        
+        .advantage-card ul {
+            list-style: none;
+        }
+        
+        .advantage-card li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+        
+        .advantage-card li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* Requirements Section */
+        .requirements {
+            background: var(--bg-light);
+        }
+        
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .requirement-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .requirement-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(15, 160, 228, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .requirement-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--primary);
+        }
+        
+        .requirement-text h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+        
+        .requirement-text p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        /* Timeline Section */
+        .timeline {
+            background: var(--bg-section);
+        }
+        
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .timeline-note {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 2rem;
+        }
+        
+        .timeline-table {
+            overflow-x: auto;
+        }
+        
+        .timeline-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        
+        .timeline-table th {
+            background: rgba(15, 160, 228, 0.1);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary);
+            color: var(--text-dark);
+        }
+        
+        .timeline-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: var(--text-dark);
+        }
+        
+        .timeline-table tr:hover {
+            background: rgba(15, 160, 228, 0.05);
+        }
+        
+        .timeline-days {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .days-count {
+            font-weight: 600;
+            color: var(--primary);
+            min-width: 50px;
+        }
+        
+        .timeline-bar {
+            height: 8px;
+            background: var(--primary);
+            border-radius: 4px;
+            min-width: 20px;
+        }
+        
+        /* Pricing Section */
+        .pricing {
+            background: var(--bg-light);
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        
+        .pricing-intro h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+        }
+        
+        .pricing-intro h2 span {
+            color: var(--primary);
+        }
+        
+        .pricing-note {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+        
+        .pricing-table-wrapper {
+            overflow-x: auto;
+        }
+        
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        .pricing-table th {
+            background: rgba(15, 160, 228, 0.1);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary);
+            white-space: nowrap;
+            color: var(--text-dark);
+        }
+        
+        .pricing-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+            color: var(--text-dark);
+        }
+        
+        .pricing-table tr:hover {
+            background: rgba(15, 160, 228, 0.05);
+        }
+        
+        .price-value {
+            font-weight: 700;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+        
+        /* Commission Section */
+        .commission {
+            background: var(--bg-section);
+        }
+        
+        .commission-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 4rem;
+            align-items: start;
+        }
+        
+        .commission-intro h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+            color: var(--text-dark);
+        }
+        
+        .commission-intro h2 span {
+            color: var(--primary);
+        }
+        
+        .commission-intro p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+        
+        .commission-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .commission-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .commission-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .commission-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+        
+        .commission-breakdown {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .commission-item {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 1rem;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .commission-item-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+        
+        .commission-item-value {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        /* Services Section */
+        .services {
+            background: var(--bg-light);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(15, 160, 228, 0.15);
+        }
+        
+        .service-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .service-card h3::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+        
+        .service-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        
+        /* About Section */
+        .about {
+            background: linear-gradient(180deg, #0f1f35 0%, var(--bg-dark) 100%);
+        }
+        
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .about-content h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            line-height: 1.3;
+        }
+        
+        .about-content h2 span {
+            color: var(--primary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(15, 160, 228, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .about-services {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        
+        .about-services h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .about-services ul {
+            list-style: none;
+        }
+        
+        .about-services li {
+            padding: 0.75rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .about-services li:last-child {
+            border-bottom: none;
+        }
+        
+        .about-services li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+        
+        .licenses {
+            margin-top: 2rem;
+        }
+        
+        .licenses h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .licenses ul {
+            list-style: none;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .licenses li {
+            padding: 0.5rem 0;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            text-align: center;
+            padding: 5rem 0;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+        
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button-outline {
+            background: transparent;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 2px solid white;
+            transition: all 0.3s;
+        }
+        
+        .cta-button-outline:hover {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .cta-section .cta-button {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .cta-section .cta-button:hover {
+            background: #f0f9ff;
+        }
+        
+        /* Footer */
+        footer {
+            background: #f1f5f9;
+            padding: 3rem 0 1.5rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-logo {
+            height: 40px;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-tagline {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .footer-links h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: block;
+            padding: 0.25rem 0;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .social-link:hover {
+            background: var(--primary);
+        }
+        
+        .social-link:hover svg {
+            fill: white;
+        }
+        
+        .social-link svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-dark);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .advantages-grid,
+            .pricing-grid,
+            .commission-grid,
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-links {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-social {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <img src="/logo-capital.svg" alt="FinlogiQ CAPITAL" class="logo">
+            <nav>
+                <ul>
+                    <li><a href="#advantages">Преимущества</a></li>
+                    <li><a href="#requirements">Требования</a></li>
+                    <li><a href="#timeline">Этапы</a></li>
+                    <li><a href="#pricing">Стоимость</a></li>
+                    <li><a href="#services">Услуги</a></li>
+                </ul>
+            </nav>
+            <a href="#contact" class="cta-button">Связаться с нами</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="float-element ring-1"></div>
+        <div class="float-element ring-2"></div>
+        <div class="float-element bar-1"></div>
+        <div class="float-element bar-2"></div>
+        
+        <div class="hero-content">
+            <img src="/logo-capital.svg" alt="FinlogiQ CAPITAL" class="hero-logo">
+            
+            <p class="hero-subtitle">— организация облигационных выпусков</p>
+            <a href="#contact" class="cta-button">Получить консультацию</a>
+        </div>
+        
+        <span class="hero-year">/ 2026</span>
+    </section>
+
+    <!-- Advantages Section -->
+    <section class="advantages" id="advantages">
+        <div class="container">
+            <div class="advantages-grid">
+                <div class="advantages-intro">
+                    <h2>Выпуск<br>облигаций</h2>
+                    <p style="color: var(--primary); font-weight: 600; margin-bottom: 1rem;">– решение для финансирования растущего бизнеса</p>
+                    <p>/ Облигации – способ привлечения заёмных средств</p>
+                </div>
+                
+                <div class="advantages-cards">
+                    <div class="advantage-card">
+                        <h3>Основные отличия облигаций от классического банковского финансирования:</h3>
+                        <ul>
+                            <li>Не требуют залога</li>
+                            <li>Отсутствует ограничение по целевому использованию средств</li>
+                            <li>Инструмент долгосрочного заимствования (от 3 лет и более)</li>
+                            <li>Облигации позволяют диверсифицировать структуру заёмных средств компании</li>
+                            <li>Размещение облигаций создаёт компании публичную историю, повышает узнаваемость бренда и переговорную позицию с банками и контрагентами, кроме того, это стабильный источник пассивов</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="advantage-card">
+                        <h3>Желательные параметры потенциального эмитента облигаций:</h3>
+                        <ul>
+                            <li>Срок существования больше 3 лет</li>
+                            <li>Выручка за последний год превышает 500 млн рублей</li>
+                            <li>Положительные чистая прибыль и размер собственного капитала</li>
+                            <li>Показатель долговой нагрузки чистый Долг/EBITDA не превышает 3,5</li>
+                            <li>Минимальный объём облигационного выпуска 100 млн рублей (наиболее популярный объём выпусков 300 - 500 млн руб.). В целом, мы реализуем кейсы до 1 млрд рублей розничного спроса</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Requirements Section -->
+    <section class="requirements" id="requirements">
+        <div class="container">
+            <h2 class="section-title">Требования к эмитенту</h2>
+            <p class="section-subtitle">Базовые параметры для успешного размещения облигаций</p>
+            
+            <div class="requirements-grid">
+                <div class="requirement-item">
+                    <div class="requirement-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </div>
+                    <div class="requirement-text">
+                        <h4>Срок работы</h4>
+                        <p>Более 3 лет на рынке</p>
+                    </div>
+                </div>
+                
+                <div class="requirement-item">
+                    <div class="requirement-icon">
+                        <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                    </div>
+                    <div class="requirement-text">
+                        <h4>Выручка</h4>
+                        <p>От 500 млн рублей в год</p>
+                    </div>
+                </div>
+                
+                <div class="requirement-item">
+                    <div class="requirement-icon">
+                        <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                    </div>
+                    <div class="requirement-text">
+                        <h4>Чистая прибыль</h4>
+                        <p>Положительная</p>
+                    </div>
+                </div>
+                
+                <div class="requirement-item">
+                    <div class="requirement-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    </div>
+                    <div class="requirement-text">
+                        <h4>Долг/EBITDA</h4>
+                        <p>Не более 3,5</p>
+                    </div>
+                </div>
+                
+                <div class="requirement-item">
+                    <div class="requirement-icon">
+                        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    </div>
+                    <div class="requirement-text">
+                        <h4>Минимальный объём</h4>
+                        <p>От 100 млн рублей</p>
+                    </div>
+                </div>
+                
+                <div class="requirement-item">
+                    <div class="requirement-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+                    </div>
+                    <div class="requirement-text">
+                        <h4>Собственный капитал</h4>
+                        <p>Положительный</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem;">
+                <p style="color: var(--primary); font-size: 1.1rem; font-weight: 600;">
+                    Размещение облигаций на ПАО Московская Биржа возможно с привязкой к иностранной валюте
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="timeline" id="timeline">
+        <div class="container">
+            <div class="timeline-header">
+                <h2 class="section-title">Как выпустить облигации?</h2>
+                <p class="section-subtitle">/ Основные этапы подготовки дебютного выпуска биржевых облигаций в рамках программы и их примерные сроки</p>
+                <div class="timeline-note">
+                    Дебютный выпуск готовится 2,5 – 3 месяца / Выход на Биржу с повторным выпуском облигаций занимает до 1 месяца
+                </div>
+            </div>
+            
+            <div class="timeline-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 60%;">Действия</th>
+                            <th>Рабочие дни</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Выбор организатора, заключение договора</td>
+                            <td><div class="timeline-days"><span class="days-count">1-3</span><div class="timeline-bar" style="width: 30px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Подготовка документов для KYC на Бирже</td>
+                            <td><div class="timeline-days"><span class="days-count">3-5</span><div class="timeline-bar" style="width: 50px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>KYC на Бирже (рассмотрение документов + интервью)</td>
+                            <td><div class="timeline-days"><span class="days-count">5-10</span><div class="timeline-bar" style="width: 80px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Утверждение Программы облигаций Эмитентом, направление документов на Биржу для регистрации программы</td>
+                            <td><div class="timeline-days"><span class="days-count">2-4</span><div class="timeline-bar" style="width: 40px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Заключение договора ЭДО с Биржей, получение ЭП в УЦ Биржи и доступов в Личные кабинеты</td>
+                            <td><div class="timeline-days"><span class="days-count">3-5</span><div class="timeline-bar" style="width: 60px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Регистрация Программы</td>
+                            <td><div class="timeline-days"><span class="days-count">5-7</span><div class="timeline-bar" style="width: 70px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Заключение договора с информационным агентством для раскрытия информации</td>
+                            <td><div class="timeline-days"><span class="days-count">2-3</span><div class="timeline-bar" style="width: 40px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Подготовка к приобретению статуса инсайдера в соответствии с 224-ФЗ</td>
+                            <td><div class="timeline-days"><span class="days-count">3-5</span><div class="timeline-bar" style="width: 50px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Заключение договора с ПВО (при необходимости)</td>
+                            <td><div class="timeline-days"><span class="days-count">1-3</span><div class="timeline-bar" style="width: 30px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Направление документов на Биржу для регистрации выпуска в рамках Программы облигаций</td>
+                            <td><div class="timeline-days"><span class="days-count">2-4</span><div class="timeline-bar" style="width: 40px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Регистрация выпуска</td>
+                            <td><div class="timeline-days"><span class="days-count">3-5</span><div class="timeline-bar" style="width: 50px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Заключение договоров с НРД: договор ЭДО, договоры эмиссионного счета и казначейского счета депо</td>
+                            <td><div class="timeline-days"><span class="days-count">3-5</span><div class="timeline-bar" style="width: 60px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Подготовка Инвестиционного меморандума Эмитента</td>
+                            <td><div class="timeline-days"><span class="days-count">5-10</span><div class="timeline-bar" style="width: 80px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Определение итоговых параметров</td>
+                            <td><div class="timeline-days"><span class="days-count">1-2</span><div class="timeline-bar" style="width: 30px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Согласование даты размещения с НРД и Биржей</td>
+                            <td><div class="timeline-days"><span class="days-count">2-3</span><div class="timeline-bar" style="width: 40px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Раскрытие информации: эмиссионные документы, итоговые параметры выпуска</td>
+                            <td><div class="timeline-days"><span class="days-count">1-2</span><div class="timeline-bar" style="width: 30px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Заключение договора с рейтинговым агентством, получение кредитного рейтинга</td>
+                            <td><div class="timeline-days"><span class="days-count">10-15</span><div class="timeline-bar" style="width: 90px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Премаркетинг, общение с инвесторами, продажи</td>
+                            <td><div class="timeline-days"><span class="days-count">10-20</span><div class="timeline-bar" style="width: 100px;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td>Размещение Биржевых облигаций</td>
+                            <td><div class="timeline-days"><span class="days-count">1</span><div class="timeline-bar" style="width: 20px;"></div></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="pricing-grid">
+                <div class="pricing-intro">
+                    <h2>Сколько<br><span>это стоит?</span></h2>
+                    <div class="pricing-note">
+                        / приведённые в таблице значения соответствуют параметрам выпуска суммой 300 млн рублей на 3 года обращения
+                    </div>
+                    <a href="mailto:bonds@finlogiq.ru?subject=Расчёт%20затрат%20эмитента" class="cta-button" style="margin-top: 2rem; display: inline-block;">Рассчитать</a>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">/ напишите нам для расчёта затрат</p>
+                </div>
+                
+                <div class="pricing-table-wrapper">
+                    <table class="pricing-table">
+                        <thead>
+                            <tr>
+                                <th>Кому платить</th>
+                                <th>За что платить</th>
+                                <th>Когда платить</th>
+                                <th>Сколько, руб.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="4">ПАО Московская Биржа</td>
+                                <td>Оформление электронной цифровой подписи (ЭЦП) для организации электронного документооборота с НРД и Московской Биржи</td>
+                                <td>После оказания соответствующей услуги Биржей</td>
+                                <td class="price-value">5 300</td>
+                            </tr>
+                            <tr>
+                                <td>Регистрация программы биржевых облигаций (опционально)</td>
+                                <td>По факту регистрации программы</td>
+                                <td class="price-value">130 000</td>
+                            </tr>
+                            <tr>
+                                <td>Регистрация выпуска облигаций и включение облигаций в список ценных бумаг, допущенных к торгам</td>
+                                <td>По факту регистрации выпуска облигаций</td>
+                                <td class="price-value">300 000</td>
+                            </tr>
+                            <tr>
+                                <td>За организацию размещения облигаций на публичных торгах</td>
+                                <td>В дату начала размещения облигаций</td>
+                                <td class="price-value">220 000</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">НКО АО НРД</td>
+                                <td>Организация торгов и клиринг по результатам сделки купли-продажи</td>
+                                <td>В момент размещения, списывается автоматически с брокерского счета эмитента</td>
+                                <td class="price-value">62 500</td>
+                            </tr>
+                            <tr>
+                                <td>За поддержание ценных бумаг в списке ценных бумаг, допущенных к торгам</td>
+                                <td>Каждый год обращения облигаций (в январе)</td>
+                                <td class="price-value">76 500</td>
+                            </tr>
+                            <tr>
+                                <td>ПВО</td>
+                                <td>Услуги представителя владельцев облигаций</td>
+                                <td>Перед началом размещения облигаций, ежегодно до погашения</td>
+                                <td class="price-value">100 000</td>
+                            </tr>
+                            <tr>
+                                <td>Рейтинговое агентство</td>
+                                <td>Получение кредитного рейтинга</td>
+                                <td>При подписании договора</td>
+                                <td class="price-value">1,2 – 1,5 млн</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">Информационное агентство</td>
+                                <td>Публикация информации, подлежащей раскрытию в соответствии с законодательством</td>
+                                <td>После успешного прохождения KYC и ежегодно</td>
+                                <td class="price-value">10 320</td>
+                            </tr>
+                            <tr>
+                                <td>Отправка сообщений (раскрываемых эмитентом) в адрес Биржи</td>
+                                <td></td>
+                                <td class="price-value">5 040</td>
+                            </tr>
+                            <tr>
+                                <td>Андеррайтер</td>
+                                <td>Организация технических моментов размещения</td>
+                                <td>В дату начала размещения</td>
+                                <td class="price-value">0,2% годовых от номинального объёма выпуска</td>
+                            </tr>
+                            <tr>
+                                <td>Организатор</td>
+                                <td>Организация эмиссии облигаций</td>
+                                <td>По факту размещения облигаций</td>
+                                <td class="price-value">1,48% - 1,88% годовых от размещённого объёма выпуска</td>
+                            </tr>
+                            <tr>
+                                <td>Маркет-мейкер</td>
+                                <td>Поддержание оборота и уменьшение волатильности облигаций</td>
+                                <td>Ежемесячно</td>
+                                <td class="price-value">0,12% годовых от номинального объёма выпуска</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commission Section -->
+    <section class="commission" id="commission">
+        <div class="container">
+            <div class="commission-grid">
+                <div class="commission-intro">
+                    <h2><span>FinlogiQ CAPITAL</span><br>закрывает сделку целиком</h2>
+                    <p>/ Все услуги оказываются комплексно и входят в единую комиссию, которая уплачивается строго по факту размещения (success fee). Мы разделяем риски вместе с нашими клиентами и не берём предоплат, обеспечивая полное сопровождение сделки.</p>
+                </div>
+                
+                <div class="commission-cards">
+                    <div class="commission-card">
+                        <h3>Комиссионное вознаграждение:</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 1rem;">Совокупное значение нашей комиссии – от 1,8 до 2,2% от объёма размещения.</p>
+                        <div class="commission-breakdown">
+                            <div class="commission-item">
+                                <div class="commission-item-label">Технические услуги, маркетинг, рейтинговое консультирование</div>
+                                <div class="commission-item-value">/ 0,2%</div>
+                            </div>
+                            <div class="commission-item">
+                                <div class="commission-item-label">Услуги за размещение облигаций</div>
+                                <div class="commission-item-value">/ 1,5% - 1,9%</div>
+                            </div>
+                            <div class="commission-item">
+                                <div class="commission-item-label">Маркет-мейкинг</div>
+                                <div class="commission-item-value">/ 0,1%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">Полный спектр услуг для успешного выхода на рынок облигаций</h2>
+
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Рейтинговое консультирование</h3>
+                    <p>Помогаем выбрать оптимальное рейтинговое агентство и организуем рейтинговое консультирование. Определяем точки роста кредитного рейтинга и содействуем внедрению необходимых изменений.</p>
+                </div>
+                
+                <div class="service-card">
+                    <h3>Документация</h3>
+                    <p>Организуем подготовку всех необходимых документов, включая эмиссионную документацию.</p>
+                </div>
+                
+                <div class="service-card">
+                    <h3>Раскрытие информации</h3>
+                    <p>Координируем работу по раскрытию информации, консультируем по всем вопросам после завершения размещения.</p>
+                </div>
+                
+                <div class="service-card">
+                    <h3>Маркет-мейкинг</h3>
+                    <p>Решаем все вопросы по маркет-мейкингу выпуска, что по статистике увеличивает ликвидность бумаги на 20 – 25%.</p>
+                </div>
+                
+                <div class="service-card">
+                    <h3>Сопровождение</h3>
+                    <p>Обеспечиваем сопровождение Эмитента в работе со всей инфраструктурой (РА, НРД, Мосбиржа, ПВО, Интерфакс), включая помощь в работе с Личными Кабинетами.</p>
+                </div>
+                
+                <div class="service-card">
+                    <h3>Маркетинговая кампания</h3>
+                    <p>Организуем маркетинговую кампанию для позиционирования Эмитента: интервью с руководством, фильмы о компании, вебинары, презентационные материалы.</p>
+                </div>
+                
+                <div class="service-card">
+                    <h3>Аудитория инвесторов</h3>
+                    <p>Сотрудничаем с крупнейшей аудиторией розничных инвесторов в облигации в России и обеспечиваем эффективную коммуникацию через каналы с аудиторией более 26 тыс. подписчиков.</p>
+                </div>
+                
+                <div class="service-card">
+                    <h3>Привлечение финансирования</h3>
+                    <p>Ключевая задача — привлечение финансирования. Обеспечиваем формирование спроса к моменту начала размещения со стороны розничных и институциональных инвесторов.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <h2>Готовы обсудить ваш проект?</h2>
+            <p>Свяжитесь с нами для бесплатной консультации по организации облигационного выпуска</p>
+            <div class="cta-buttons">
+                <a href="mailto:bonds@finlogiq.ru" class="cta-button">Написать нам</a>
+                <a href="tel:+79918924418" class="cta-button-outline">+7 (991) 892-44-18</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <img src="/logo-capital.svg" alt="FinlogiQ CAPITAL" class="footer-logo">
+                    <p class="footer-tagline">Организация облигационных выпусков</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div>
+                        <h4>Услуги</h4>
+                        <ul>
+                            <li><a href="#advantages">Выпуск облигаций</a></li>
+                            <li><a href="#timeline">Этапы размещения</a></li>
+                            <li><a href="#pricing">Стоимость</a></li>
+                            <li><a href="#services">Услуги</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Компания</h4>
+                        <ul>
+                            <li><a href="#contact">Контакты</a></li>
+                            <li><a href="https://finlogiq.ru">FinlogiQ</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Контакты</h4>
+                        <ul>
+                            <li><a href="mailto:bonds@finlogiq.ru">bonds@finlogiq.ru</a></li>
+                            <li><a href="tel:+79918924418">+7 (991) 892-44-18</a></li>
+                            
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="footer-social">
+                    <a href="https://t.me/finlogiq" class="social-link" title="Telegram">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z"/></svg>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2026 FinlogiQ CAPITAL. Все права защищены.</p>
+                <p>ООО «ФинлоджиК Капитал»</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

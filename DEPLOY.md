@@ -258,3 +258,45 @@ docker-compose logs mongodb
 # Проверьте переменные окружения
 docker-compose exec server env | grep MONGO
 ```
+---
+
+## Настройка поддомена capital.finlogiq.ru
+
+### 1. DNS-запись
+
+Добавьте A-запись для поддомена в DNS:
+```
+capital.finlogiq.ru -> IP вашего сервера
+```
+
+### 2. Обновление SSL сертификата
+
+Если сертификат ещё не включает поддомен, обновите его:
+
+```bash
+# Обновите сертификат с поддоменом
+docker-compose run --rm certbot certonly \
+  --webroot \
+  --webroot-path=/var/www/certbot \
+  -d finlogiq.ru \
+  -d www.finlogiq.ru \
+  -d capital.finlogiq.ru \
+  --email admin@finlogiq.ru \
+  --agree-tos \
+  --expand
+```
+
+### 3. Перезапуск nginx
+
+```bash
+docker-compose restart client
+```
+
+### 4. Редактирование лендинга
+
+Файлы лендинга capital.finlogiq.ru находятся в директории `/opt/finlogiq/capital/`:
+- `index.html` — основная страница
+- `logo-capital.svg` — логотип
+- `favicon.svg` — иконка сайта
+
+После изменений перезапуск не требуется (директория монтируется напрямую).

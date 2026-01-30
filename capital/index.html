@@ -933,6 +933,107 @@
                 flex-direction: column;
                 align-items: center;
             }
+            
+            /* Mobile-friendly pricing table */
+            .pricing-table thead {
+                display: none;
+            }
+            
+            .pricing-table,
+            .pricing-table tbody,
+            .pricing-table tr,
+            .pricing-table td {
+                display: block;
+                width: 100%;
+            }
+            
+            .pricing-table tr {
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 1rem;
+                margin-bottom: 1rem;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            }
+            
+            .pricing-table td {
+                padding: 0.5rem 0;
+                border: none;
+                position: relative;
+                padding-left: 0;
+            }
+            
+            .pricing-table td::before {
+                content: attr(data-label);
+                display: block;
+                font-weight: 600;
+                font-size: 0.75rem;
+                color: var(--primary);
+                text-transform: uppercase;
+                margin-bottom: 0.25rem;
+            }
+            
+            .pricing-table td:first-child {
+                font-weight: 600;
+                color: var(--text-dark);
+                border-bottom: 1px solid #e2e8f0;
+                padding-bottom: 0.75rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .pricing-table td.price-value {
+                font-size: 1.1rem;
+            }
+            
+            .pricing-table tr:hover {
+                background: #ffffff;
+            }
+            
+            /* Mobile-friendly timeline table */
+            .timeline-table thead {
+                display: none;
+            }
+            
+            .timeline-table table,
+            .timeline-table tbody,
+            .timeline-table tr,
+            .timeline-table td {
+                display: block;
+                width: 100%;
+            }
+            
+            .timeline-table tr {
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 1rem;
+                margin-bottom: 0.75rem;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            }
+            
+            .timeline-table td {
+                padding: 0.5rem 0;
+                border: none;
+            }
+            
+            .timeline-table td:first-child {
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+            }
+            
+            .timeline-table td:last-child {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+            
+            .timeline-days {
+                width: 100%;
+            }
+            
+            .days-count {
+                font-size: 1.1rem;
+            }
         }
         
     </style>
@@ -951,7 +1052,7 @@
                     <li><a href="#services">Услуги</a></li>
                 </ul>
             </nav>
-            <a href="#contact" class="cta-button">Связаться с нами</a>
+            <a href="#contact" class="cta-button">Связаться</a>
         </div>
     </header>
 
@@ -1212,77 +1313,82 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td rowspan="4">ПАО Московская Биржа</td>
-                                <td>Оформление электронной цифровой подписи (ЭЦП) для организации электронного документооборота с НРД и Московской Биржи</td>
-                                <td>После оказания соответствующей услуги Биржей</td>
-                                <td class="price-value">5 300</td>
+                                <td data-label="Кому платить">ПАО Московская Биржа</td>
+                                <td data-label="За что платить">Оформление электронной цифровой подписи (ЭЦП) для организации электронного документооборота с НРД и Московской Биржи</td>
+                                <td data-label="Когда платить">После оказания соответствующей услуги Биржей</td>
+                                <td data-label="Сколько" class="price-value">5 300</td>
                             </tr>
                             <tr>
-                                <td>Регистрация программы биржевых облигаций (опционально)</td>
-                                <td>По факту регистрации программы</td>
-                                <td class="price-value">130 000</td>
+                                <td data-label="Кому платить">ПАО Московская Биржа</td>
+                                <td data-label="За что платить">Регистрация программы биржевых облигаций (опционально)</td>
+                                <td data-label="Когда платить">По факту регистрации программы</td>
+                                <td data-label="Сколько" class="price-value">130 000</td>
                             </tr>
                             <tr>
-                                <td>Регистрация выпуска облигаций и включение облигаций в список ценных бумаг, допущенных к торгам</td>
-                                <td>По факту регистрации выпуска облигаций</td>
-                                <td class="price-value">300 000</td>
+                                <td data-label="Кому платить">ПАО Московская Биржа</td>
+                                <td data-label="За что платить">Регистрация выпуска облигаций и включение облигаций в список ценных бумаг, допущенных к торгам</td>
+                                <td data-label="Когда платить">По факту регистрации выпуска облигаций</td>
+                                <td data-label="Сколько" class="price-value">300 000</td>
                             </tr>
                             <tr>
-                                <td>За организацию размещения облигаций на публичных торгах</td>
-                                <td>В дату начала размещения облигаций</td>
-                                <td class="price-value">220 000</td>
+                                <td data-label="Кому платить">ПАО Московская Биржа</td>
+                                <td data-label="За что платить">За организацию размещения облигаций на публичных торгах</td>
+                                <td data-label="Когда платить">В дату начала размещения облигаций</td>
+                                <td data-label="Сколько" class="price-value">220 000</td>
                             </tr>
                             <tr>
-                                <td rowspan="2">НКО АО НРД</td>
-                                <td>Организация торгов и клиринг по результатам сделки купли-продажи</td>
-                                <td>В момент размещения, списывается автоматически с брокерского счета эмитента</td>
-                                <td class="price-value">62 500</td>
+                                <td data-label="Кому платить">НКО АО НРД</td>
+                                <td data-label="За что платить">Организация торгов и клиринг по результатам сделки купли-продажи</td>
+                                <td data-label="Когда платить">В момент размещения, списывается автоматически с брокерского счета эмитента</td>
+                                <td data-label="Сколько" class="price-value">62 500</td>
                             </tr>
                             <tr>
-                                <td>За поддержание ценных бумаг в списке ценных бумаг, допущенных к торгам</td>
-                                <td>Каждый год обращения облигаций (в январе)</td>
-                                <td class="price-value">76 500</td>
+                                <td data-label="Кому платить">НКО АО НРД</td>
+                                <td data-label="За что платить">За поддержание ценных бумаг в списке ценных бумаг, допущенных к торгам</td>
+                                <td data-label="Когда платить">Каждый год обращения облигаций (в январе)</td>
+                                <td data-label="Сколько" class="price-value">76 500</td>
                             </tr>
                             <tr>
-                                <td>ПВО</td>
-                                <td>Услуги представителя владельцев облигаций</td>
-                                <td>Перед началом размещения облигаций, ежегодно до погашения</td>
-                                <td class="price-value">100 000</td>
+                                <td data-label="Кому платить">ПВО</td>
+                                <td data-label="За что платить">Услуги представителя владельцев облигаций</td>
+                                <td data-label="Когда платить">Перед началом размещения облигаций, ежегодно до погашения</td>
+                                <td data-label="Сколько" class="price-value">100 000</td>
                             </tr>
                             <tr>
-                                <td>Рейтинговое агентство</td>
-                                <td>Получение кредитного рейтинга</td>
-                                <td>При подписании договора</td>
-                                <td class="price-value">1,2 – 1,5 млн</td>
+                                <td data-label="Кому платить">Рейтинговое агентство</td>
+                                <td data-label="За что платить">Получение кредитного рейтинга</td>
+                                <td data-label="Когда платить">При подписании договора</td>
+                                <td data-label="Сколько" class="price-value">1,2 – 1,5 млн</td>
                             </tr>
                             <tr>
-                                <td rowspan="2">Информационное агентство</td>
-                                <td>Публикация информации, подлежащей раскрытию в соответствии с законодательством</td>
-                                <td>После успешного прохождения KYC и ежегодно</td>
-                                <td class="price-value">10 320</td>
+                                <td data-label="Кому платить">Информационное агентство</td>
+                                <td data-label="За что платить">Публикация информации, подлежащей раскрытию в соответствии с законодательством</td>
+                                <td data-label="Когда платить">После успешного прохождения KYC и ежегодно</td>
+                                <td data-label="Сколько" class="price-value">10 320</td>
                             </tr>
                             <tr>
-                                <td>Отправка сообщений (раскрываемых эмитентом) в адрес Биржи</td>
-                                <td></td>
-                                <td class="price-value">5 040</td>
+                                <td data-label="Кому платить">Информационное агентство</td>
+                                <td data-label="За что платить">Отправка сообщений (раскрываемых эмитентом) в адрес Биржи</td>
+                                <td data-label="Когда платить">—</td>
+                                <td data-label="Сколько" class="price-value">5 040</td>
                             </tr>
                             <tr>
-                                <td>Андеррайтер</td>
-                                <td>Организация технических моментов размещения</td>
-                                <td>В дату начала размещения</td>
-                                <td class="price-value">0,2% годовых от номинального объёма выпуска</td>
+                                <td data-label="Кому платить">Андеррайтер</td>
+                                <td data-label="За что платить">Организация технических моментов размещения</td>
+                                <td data-label="Когда платить">В дату начала размещения</td>
+                                <td data-label="Сколько" class="price-value">0,2% годовых от номинального объёма выпуска</td>
                             </tr>
                             <tr>
-                                <td>Организатор</td>
-                                <td>Организация эмиссии облигаций</td>
-                                <td>По факту размещения облигаций</td>
-                                <td class="price-value">1,48% - 1,88% годовых от размещённого объёма выпуска</td>
+                                <td data-label="Кому платить">Организатор</td>
+                                <td data-label="За что платить">Организация эмиссии облигаций</td>
+                                <td data-label="Когда платить">По факту размещения облигаций</td>
+                                <td data-label="Сколько" class="price-value">1,48% - 1,88% годовых от размещённого объёма выпуска</td>
                             </tr>
                             <tr>
-                                <td>Маркет-мейкер</td>
-                                <td>Поддержание оборота и уменьшение волатильности облигаций</td>
-                                <td>Ежемесячно</td>
-                                <td class="price-value">0,12% годовых от номинального объёма выпуска</td>
+                                <td data-label="Кому платить">Маркет-мейкер</td>
+                                <td data-label="За что платить">Поддержание оборота и уменьшение волатильности облигаций</td>
+                                <td data-label="Когда платить">Ежемесячно</td>
+                                <td data-label="Сколько" class="price-value">0,12% годовых от номинального объёма выпуска</td>
                             </tr>
                         </tbody>
                     </table>
